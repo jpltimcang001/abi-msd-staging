@@ -2,17 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use SoapVar;
-/* Utils */
-use App\Utils\Globals;
-use App\Utils\Params;
-use App\Utils\Utils;
-use DB;
-/* Model */
-use App\Model\noc\Salesman as Salesman;
-use App\Model\noc\SalesOffice as SalesOffice;
-use App\Model\noc\DistributionChannel as DistributionChannel;
-/* Schema */
 use App\Data\BalanceData as BalanceData;
 use App\Data\BalanceEmptiesData as BalanceEmptiesData;
 use App\Data\CustomerDiscountGroupData as CustomerDiscountGroupData;
@@ -31,9 +20,9 @@ use App\Data\PaymentMethodData as PaymentMethodData;
 use App\Data\PaymentTermsData as PaymentTermsData;
 use App\Data\PromotionBudgetData as PromotionBudgetData;
 use App\Data\PromotionData as PromotionData;
-use App\Data\PromotionFocData as PromotionFocData;
 use App\Data\PromotionDetailData as PromotionDetailData;
 use App\Data\PromotionDiscountLineData as PromotionDiscountLineData;
+use App\Data\PromotionFocData as PromotionFocData;
 use App\Data\PromotionLocationData as PromotionLocationData;
 use App\Data\PserData;
 use App\Data\SalesmanData as SalesmanData;
@@ -45,23 +34,30 @@ use App\Data\SKUData as SKUData;
 use App\Data\SubChannelData as SubChannelData;
 use App\Data\VATBusPostingGroupData as VATBusPostingGroupData;
 use App\Data\ZoneData as ZoneData;
-
 use App\Model\noc\BalanceEmpties;
+use App\Model\noc\DistributionChannel as DistributionChannel;
+use App\Model\noc\Invoice;
+use App\Model\noc\InvoiceDetails as InvoiceDetail;
+use App\Model\noc\InvoiceRefundDetail;
+use App\Model\noc\Location;
+use App\Model\noc\PickNote;
+use App\Model\noc\Salesman as Salesman;
+use App\Model\noc\SalesOffice as SalesOffice;
 use App\Model\noc\SalesOrder;
 use App\Model\noc\SalesOrderDetail;
 use App\Model\noc\SalesOrderReturnable;
+use App\Model\noc\Sku;
 use App\Model\noc\TempCollectionCash;
 use App\Model\noc\TempCollectionCashBreakdown;
-use App\Model\noc\PickNote;
-use App\Model\noc\Invoice;
-use App\Model\noc\InvoiceRefundDetail;
-use App\Model\noc\Location;
-use App\Model\noc\InvoiceDetails as InvoiceDetail;
-use App\Model\noc\Sku;
-use App\Model\wms\OutgoingNotification;
 use App\Model\wms\InventoryBreakdown;
-
+use App\Model\wms\OutgoingNotification;
+use App\Utils\DecimalTruncator;
+use App\Utils\Globals;
+use App\Utils\Params;
+use App\Utils\Utils;
+use DB;
 use Illuminate\Database\Eloquent\Model;
+use SoapVar;
 
 class DownloadConnector extends Model
 {
@@ -1800,7 +1796,11 @@ class DownloadConnector extends Model
                         switch ($att_key) {
                             case "ItemNo":
                                 $uom = isset($value->UnitofMeasureCode) ? $value->UnitofMeasureCode : "";
-                                $msd_data_val->product_no = $att_value . '-' . $uom; // Append UOM required in CMOS
+                                $msd_data_val->product_no = $att_value . '-' . $uom; // Append UOM required in CMOS\
+                                break;
+                            case "UnitPrice":
+                                $att_value = DecimalTruncator::truncate($att_value, 2);
+                                break;
                         }
                         $msd_data_val->setMSD($att_key, $att_value);
                     }
@@ -3096,7 +3096,7 @@ class DownloadConnector extends Model
 							$unit_price = isset($value->Unit_Price) ? $value->Unit_Price : 0;
 						}
                         
-
+                        $unit_price = DecimalTruncator::truncate($unit_price, 2);
 						
                         $case_unit_price = isset($value->Unit_Price) ? $value->Unit_Price : 0;
                         $shell_sku_code = isset($value->_x0031_000000021) ? $value->_x0031_000000021 : "";
