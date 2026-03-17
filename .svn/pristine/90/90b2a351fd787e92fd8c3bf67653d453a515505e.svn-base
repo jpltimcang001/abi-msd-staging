@@ -1,0 +1,222 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+/* Middleware */
+use App\Http\Middleware\DownloadConnector;
+use App\Http\Middleware\UploadConnector;
+/* Utils */
+use App\Utils\Globals;
+use App\Utils\Params;
+use App\Utils\Utils;
+/* Schema */
+use App\Data\InvoiceData;
+use App\Data\InvoiceDetailData;
+
+class APIInvoiceDownloadHandler extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'apirun:invoice {code} {sales_office_no} {company} {trigger_id}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Run Sales Order to Cash Receipt Post';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+		$so_code = $this->argument('code');
+		$sales_office_no = $this->argument('sales_office_no');
+		$trigger_id = $this->argument('trigger_id');
+		$company = $this->argument('company');
+        $date_from = date("Y-m-d") . " 00:00:00";;
+        $date_to = date("Y-m-d") . " 23:59:59";
+		
+        $build = SalesOrder::where('code', '=', $so_code)
+        ->with(['salesman'])
+        ->whereHas('salesman', function ($q) use ($sales_office_no) {
+            $q->where('sales_office_no', '=', $sales_office_no);
+        });
+        $batch = $build->first();
+
+        if($this->invoiceHeader($batch, $sales_office_no, $company, $trigger_id)) {
+            $invoice_data =  Invoice::where('msd_synced', '=', 1)
+                ->where('sales_office_no', '=', $sales_office_no)
+                ->where('sales_order_code', '=', $batch->code)
+                ->whereBetween('invoice_date', [$date_from, $date_to])
+                ->get();
+            
+                foreach ($invoice_data as $key => $invoice) {
+                    $this->invoiceLine($invoice, $sales_office_no, $company, $trigger_id);
+                }
+        }
+       
+    }
+
+    public function invoiceHeader($so_obj, $sales_office_no, $company, $trigger_id = null ) {
+            $soap_data = [];
+            $soap_data['params'] = ['Order_No' => $so_obj->code];
+            $route = Params::values()['webservice']['abi_msd']['route']['sales-order']['list'];
+            $url = Globals::soapABIMSDynamicsURL($route, $company);
+            $soap_client = Globals::soapClientABINOCCentralWS();
+
+            $msd_soap_result = Globals::callSoapApiReadMultiple($url, $soap_data);
+            if (isset($msd_soap_result->ReadMultiple_Result->PostedSalesInvoicesService)) {
+                $msd_data = $msd_soap_result->ReadMultiple_Result->PostedSalesInvoicesService;
+                $total_rows = count($msd_data);
+                $msd_data = $total_rows === 1 ? [$msd_data] : $msd_data;
+                /* Save generated response as file backup */
+                $file_name = DownloadConnector::PATH . ($trigger_id != null ? $trigger_id . "-" : "") . date("YmdHis-") . str_replace(" ", "-", InvoiceData::MODULE_POSTED_INVOICE);
+                Globals::saveJsonFile($file_name, $msd_data);
+                Utils::updateTriggerStatus($trigger_id, DownloadConnector::STATUS_ONGOING); /* Update trigger status */
+
+                /* Sync Invoice by batch thru ABI NOC Web Service */
+                if ($total_rows > 0) {
+                    $batch_data = array_chunk($msd_data, DownloadConnector::BATCH_LIMIT); // Create batch
+
+                    foreach ($batch_data as $key => $batch) {
+                        $header_data = [];
+                        foreach ($batch as $row) {
+                            if (!isset($row->No)) {
+                                continue;
+                            }
+                            if (!isset($header_data[$row->No])) {
+                                $msd_data_val = new InvoiceData();
+                                foreach (get_object_vars($row) as $att_key => $att_value) {
+                                    switch ($att_key) {
+                                        case "Posting_Date":
+                                            $msd_data_val->invoice_date = date("Y-m-d H:i:s", strtotime($row->Posting_Date));
+                                            $msd_data_val->invoice_updated = date("Y-m-d H:i:s", strtotime($row->Posting_Date));
+                                        case "Delivery_Status":
+                                            $msd_data_val->delivered = $att_value ? 1 : 0;
+                                    }
+                                    $msd_data_val->setMSD($att_key, $att_value);
+                                }
+                                $msd_data_val->code = $row->No;
+                                $msd_data_val->status = "new";
+                                $msd_data_val->created_by = DownloadConnector::MSD_LOGGER_NAME;
+                                $msd_data_val->updated_by = DownloadConnector::MSD_LOGGER_NAME;
+                                $msd_data_val->msd_synced = 1;
+                                $header_data[$row->No] = $msd_data_val;
+                            }
+                        }
+                        $batch_params = '<GetBatchInvoiceCriteria xsi:type="urn:GetInvoiceCriteriaArray" soap-enc:arrayType="urn:GetInvoiceCriteria[]">';
+                        foreach ($header_data as $line) {
+                            $batch_params .= $line->xmlArrayLineStrings();
+                        }
+                        $batch_params .= '</GetBatchInvoiceCriteria>';
+                        $batch_request = new SoapVar($batch_params, XSD_ANYXML);
+                        $soap_result = (array) $soap_client->saveBatchInvoice($batch_request);
+                        /** Log response message */
+                        Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . InvoiceData::MODULE_NAME_POSTED_INVOICE . "] " . $soap_result['message'], ""); /* Save log info message */
+                        /** Log total rows */
+                        Utils::updateTriggerTotalRows($trigger_id, $soap_result['total_rows'], true); /* Update trigger total rows = existing + response total_rows */
+                        /** Log failed rows */
+                        Utils::updateTriggerFailedRows($trigger_id, $soap_result['failed_rows'], true); /* Update trigger failed rows = existing + response failed_rows */
+                        /** Log response error */
+                        if (isset($soap_result['error']) && $soap_result['error'] > 0) {
+                            foreach ($soap_result['error'] as $k_e => $v_err_msg) {
+                                Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::ERROR, DownloadConnector::MSD_LOGGER_NAME, "[" . InvoiceData::MODULE_NAME_POSTED_INVOICE . "]" . Utils::logMsg($v_err_msg), ""); /* Save log error message */
+                            }
+                        }
+                    }
+                } else {
+                    Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::ERROR, DownloadConnector::MSD_LOGGER_NAME, "[" . InvoiceData::MODULE_NAME_POSTED_INVOICE . "] No " . strtolower(InvoiceData::MODULE_NAME_POSTED_INVOICE) . " found.", ""); /* Save log info message */
+                    return false;
+                }
+                return true;
+            }
+            else {
+                return false;
+            }
+    }
+
+    public function invoiceLine($inv_obj, $sales_office_no, $company, $trigger_id = null ) {
+        
+        $soap_client = Globals::soapClientABINOCCentralWS();
+        $soap_data = [];
+        $soap_data['params'] = ['Document_No' => $inv_obj->code,];
+        $msd_soap_result = Globals::callSoapApiReadMultiple($url, $soap_data);
+
+        if (isset($msd_soap_result->ReadMultiple_Result->PostedSalesInvoiceLinesSCM)) {
+            $msd_data = $msd_soap_result->ReadMultiple_Result->PostedSalesInvoiceLinesSCM;
+            $total_rows = count($msd_data);
+            $msd_data = $total_rows === 1 ? [$msd_data] : $msd_data;
+            /* Save generated response as file backup */
+            $file_name = DownloadConnector::PATH . ($trigger_id != null ? $trigger_id . "-" : "") . date("YmdHis-") . str_replace(" ", "-", InvoiceDetailData::MODULE_POSTED_INVOICE_DETAIL);
+            Globals::saveJsonFile($file_name, $msd_data);
+            Utils::updateTriggerStatus($trigger_id, DownloadConnector::STATUS_ONGOING); /* Update trigger status */
+
+            /* Sync Invoice Detail by batch thru ABI NOC Web Service */
+            if ($total_rows > 0) {
+                $batch_data = array_chunk($msd_data, DownloadConnector::BATCH_LIMIT); // Create batch
+
+                foreach ($batch_data as $key => $batch) {
+                    $data = [];
+                    foreach ($batch as $row) {
+                        $msd_data_val = new InvoiceDetailData();
+                        foreach (get_object_vars($row) as $att_key => $att_value) {
+                            switch ($att_key) {
+                                case "No":
+                                    $uom = isset($row->Unit_of_Measure_Code) ? $row->Unit_of_Measure_Code : "";
+                                    $msd_data_val->product_code = $att_value . '-' . $uom; // Append UOM required in CMOS
+                            }
+                            $msd_data_val->setMSD($att_key, $att_value);
+                        }
+                        $msd_data_val->so_code = $noc_data_model->sales_order_code;
+                        $msd_data_val->added_by = DownloadConnector::MSD_LOGGER_NAME;
+                        $msd_data_val->edited_by = DownloadConnector::MSD_LOGGER_NAME;
+                        $data[] = $msd_data_val;
+                    }
+                    $batch_params = '<GetInvoiceDetailCriteria xsi:type="urn:GetInvoiceDetailCriteriaArray" soap-enc:arrayType="urn:GetInvoiceDetailCriteria[]">';
+                    foreach ($data as $line) {
+                        $batch_params .= $line->xmlArrayLineStrings();
+                    }
+                    $batch_params .= '</GetInvoiceDetailCriteria>';
+
+                    $batch_request = new SoapVar($batch_params, XSD_ANYXML);
+                    $soap_result = (array) $soap_client->saveBatchInvoiceDetail($batch_request);
+                    /** Log response message */
+                    Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . InvoiceDetailData::MODULE_NAME_POSTED_INVOICE_DETAIL . "] " . $soap_result['message'], ""); /* Save log info message */
+                    /** Log total rows */
+                    Utils::updateTriggerTotalRows($trigger_id, $soap_result['total_rows'], true); /* Update trigger total rows = existing + response total_rows */
+                    /** Log failed rows */
+                    Utils::updateTriggerFailedRows($trigger_id, $soap_result['failed_rows'], true); /* Update trigger failed rows = existing + response failed_rows */
+                    /** Log response error */
+                    if (isset($soap_result['error']) && $soap_result['error'] > 0) {
+                        foreach ($soap_result['error'] as $k_e => $v_err_msg) {
+                            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::ERROR, DownloadConnector::MSD_LOGGER_NAME, "[" . InvoiceDetailData::MODULE_NAME_POSTED_INVOICE_DETAIL . "]" . Utils::logMsg($v_err_msg), ""); /* Save log error message */
+                        }
+                    }
+                }
+            } else {
+                Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::ERROR, DownloadConnector::MSD_LOGGER_NAME, "[" . InvoiceDetailData::MODULE_NAME_POSTED_INVOICE_DETAIL . "] No " . strtolower(InvoiceDetailData::MODULE_NAME_POSTED_INVOICE_DETAIL) . " found.", ""); /* Save log info message */
+            }
+        }
+    }
+
+    
+    
+}

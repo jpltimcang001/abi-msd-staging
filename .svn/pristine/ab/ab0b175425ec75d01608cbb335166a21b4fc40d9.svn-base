@@ -1,0 +1,10 @@
+cd c:\
+cd %~dp0\..
+cls
+php artisan api:balanceRequest --company="Parallel" --sales-office="710100"
+TIMEOUT /T 10
+php artisan api:balanceRequest --company="Parallel" --sales-office="710200"
+TIMEOUT /T 10
+php artisan api:balanceRequest --company="Parallel" --sales-office="750200"
+TIMEOUT /T 10
+php artisan api:balanceRequest --company="Parallel" --sales-office="750300"

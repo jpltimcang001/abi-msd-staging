@@ -1,0 +1,150 @@
+{
+	"info": {
+		"_postman_id": "84771fec-d181-4915-9df8-2524557ca1b8",
+		"name": "ABI MSD Integration Batch",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "955567"
+	},
+	"item": [
+		{
+			"name": "HTTP Download Batch Customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {\r\n        \"short_description\": \"BAE\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/batch-customer",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"batch-customer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Queue Upload Batch Sales Order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"date_from\": \"2021-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/queue/sales-order-multiple",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"queue",
+						"sales-order-multiple"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Queue Upload Batch Sales Credit Memo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"date_from\": \"2021-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/queue/sales-credit-memo-multiple",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"queue",
+						"sales-credit-memo-multiple"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Queue Upload Batch Cash Receipt Journal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"date_from\": \"2021-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/queue/cash-receipt-journal-multiple",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"queue",
+						"cash-receipt-journal-multiple"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Queue Upload Batch Transaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"date_from\": \"2021-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/queue/batch-transaction",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"queue",
+						"batch-transaction"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

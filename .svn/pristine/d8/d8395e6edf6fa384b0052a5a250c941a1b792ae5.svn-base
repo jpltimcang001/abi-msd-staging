@@ -1,0 +1,5 @@
+cd c:\
+cd %~dp0\..
+cls
+php artisan api:allDownload --company="BREW%%20MASTERS%%20INTERNATIONAL%%20INC" --sales-office="750200" 
+timeout /t 5 /nobreak

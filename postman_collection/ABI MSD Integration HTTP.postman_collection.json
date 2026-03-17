@@ -1,0 +1,1046 @@
+{
+	"info": {
+		"_postman_id": "46d6eddf-8b5c-49e1-8cba-3a1f54a78a9f",
+		"name": "ABI MSD Integration HTTP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "955567"
+	},
+	"item": [
+		{
+			"name": "HTTP Download Customer Discount Group",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/customer-discount-group",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"customer-discount-group"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Customer Price Group",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/customer-price-group",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"customer-price-group"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Customer Posting Group",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/customer-posting-group",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"customer-posting-group"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Gen Bus Posting Group",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/gen-bus-posting-group",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"gen-bus-posting-group"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download VAT Bus Posting Group",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/vat-bus-posting-group",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"vat-bus-posting-group"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Payment Method",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/payment-method",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"payment-method"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Payment Terms",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/payment-terms",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"payment-terms"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Channel",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/channel",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"channel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Location",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/location",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"location"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Salesman Type",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/salesman-type",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"salesman-type"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Salesman",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/salesman",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"salesman"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Stock In Salesman Warehouse",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {\r\n        \"Location_Code\": \"BAE-SM002\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/stock-in-salesman-warehouse",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"stock-in-salesman-warehouse"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {\r\n        \"Global_Dimension_1_Code\": \"BAE\",\r\n        \"Salesperson_Code\": \"BAE-401\",\r\n        \"No\": \"BII007895\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/customer",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"customer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Product",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {\r\n        \"No\" : \"91COB045214\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/product",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Sales Price",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/sales-price",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"sales-price"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Promotion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/promotion",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"promotion"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Promotion Line",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/promotion-line",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"promotion-line"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Promotion Customer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/promotion-customer",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"promotion-customer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Promotion Discount Line",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/promotion-discount-line",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"promotion-discount-line"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Promotion Budget",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"BII\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/promotion-budget",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"promotion-budget"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Posted Sales Invoice",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"date_from\": \"2021-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/posted-sales-invoice",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"posted-sales-invoice"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Posted Sales Invoice Line",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"date_from\": \"2021-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/posted-sales-invoice-line",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"posted-sales-invoice-line"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Pending Customer Creation Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"added_by\": \"jttorate\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/pending-customer-creation-request",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"pending-customer-creation-request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Download Pending Credit Control Change Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"added_by\": \"jttorate\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/download/pending-credit-control-change-request",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"download",
+						"pending-credit-control-change-request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload Withdrawal Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"date_from\": \"2022-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/withdrawal-request",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"withdrawal-request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload Sales Order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"date_from\": \"2021-08-11\",\r\n    \"date_to\": \"2021-08-12\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/sales-order",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"sales-order"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload Sales Order Reservation Entry",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"date_from\": \"2021-08-12\",\r\n    \"date_to\": \"2021-08-12\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/sales-order-reservation-entry",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"sales-order-reservation-entry"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload Sales Order Post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"date_from\": \"2021-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/sales-order-post",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"sales-order-post"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload Cash Receipt Journal",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"date_from\": \"2021-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/cash-receipt-journal",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"cash-receipt-journal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload Sales Credit Memo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"date_from\": \"2022-08-19\",\r\n    \"date_to\": \"2022-08-19\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/sales-credit-memo",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"sales-credit-memo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload Return Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"date_from\": \"2021-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/return-request",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"return-request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload Return Request Reservation Entry (Salesman)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"date_from\": \"2021-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/return-request-reservation-entry-salesman",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"return-request-reservation-entry-salesman"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload Return Request Reservation Entry (Warehouse)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"date_from\": \"2021-01-01\",\r\n    \"date_to\": \"2022-12-31\",\r\n    \"added_by\": \"jttorate\",\r\n    \"params\": {}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/return-request-reservation-entry-sales-office",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"return-request-reservation-entry-sales-office"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload Credit Note Header",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date_from\": \"2021-12-15\",\r\n    \"date_to\": \"2022-03-22\",\r\n    \"added_by\": \"jttorate\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/credit-note-header",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"credit-note-header"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload Credit Note Line",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date_from\": \"2021-12-15\",\r\n    \"date_to\": \"2022-03-22\",\r\n    \"added_by\": \"jttorate\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/credit-note-line",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"credit-note-line"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload New Customer Creation Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"company\": \"UAT\",\r\n    \"sales_office_no\": \"710200\",\r\n    \"date_from\": \"2022-08-12\",\r\n    \"date_to\": \"2022-08-12\",\r\n    \"added_by\": \"jttorate\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/new-customer-creation-request",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"new-customer-creation-request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HTTP Upload New Credit Control Change Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date_from\": \"2021-12-15\",\r\n    \"date_to\": \"2022-03-22\",\r\n    \"added_by\": \"jttorate\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/api/upload/new-credit-control-change-request",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"upload",
+						"new-credit-control-change-request"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

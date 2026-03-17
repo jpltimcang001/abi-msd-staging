@@ -1,0 +1,317 @@
+<?php
+
+/** 
+ * Container for SalesOrderDetailData.  
+ * 
+ * */
+
+namespace App\Data;
+
+class SalesOrderDetailData
+{
+    const MODULE_SALES_ORDER_DETAIL = "SALES ORDER DET";
+    const MODULE_NAME_SALES_ORDER_DETAIL = "Sales Order Detail";
+    const SCHEMES = array("Scheme_No_1", "Scheme_No_2", "Scheme_No_3", "Scheme_No_4", "Scheme_No_5");
+
+    /**
+     * Dictionary of NOC => MSD columns.
+     */
+    const dict = array(
+        "Key" => 'ms_dynamics_key',
+        "Type" => 'type',
+        "No" => 'sku_code',
+        "Empties_Type" => 'empties_type',
+        "Quantity" => 'quantity',
+        //"Scheme_No_1"=> 'discount_no',
+        "Line_Discount_Amount" => 'discount_amount',
+        "Discount_Amount_1_By_Amount" => 'discount_amount',
+        "Discount_Scheme" => 'discount_scheme',
+        // "FilteredTypeField"=> '',
+        // "Dealer_Pack_Type"=> '',
+        // "Cross_Reference_No"=> '',
+        // "Item_Reference_No"=> '',
+        // "IC_Partner_Code"=> '',
+        // "IC_Partner_Ref_Type"=> '',
+        // "IC_Partner_Reference"=> '',
+        // "IC_Item_Reference"=> '',
+        // "Variant_Code"=> '',
+        // "Substitution_Available"=> '',
+        // "Purchasing_Code"=> '',
+        // "Nonstock"=> '',
+        // "VAT_Prod_Posting_Group"=> '',
+        // "Description"=> '',
+        // "Description_2"=> '',
+        // "Drop_Shipment"=> '',
+        // "Special_Order"=> '',
+        // "Return_Reason_Code"=> '',
+        // "Location_Code" => 'location_code',
+        // "Bin_Code"=> '',
+        // "Control50"=> '',
+        // "Qty_to_Assemble_to_Order"=> '',
+        // "Reserved_Quantity"=> '',
+        // "Unit_of_Measure_Code"=> '',
+        // "Unit_of_Measure"=> '',
+        // "Unit_Cost_LCY"=> '',
+        // "SalesPriceExist"=> '',
+        // "Unit_Price"=> '',
+        // "Tax_Liable"=> '',
+        // "Tax_Area_Code"=> '',
+        // "Tax_Group_Code"=> '',
+        // "Line_Discount_Percent"=> '',
+        // "VAT_Percent"=> '',
+        // "WHT_Business_Posting_Group"=> '',
+        // "WHT_Product_Posting_Group"=> '',
+        // "User_Discount_Entry"=> '',
+        // "Manual_Discount_Type"=> '',
+        // "Line_Amount"=> '',
+        // "SalesLineDiscExists"=> '',
+        // "Line_Discount_Amount"=> '',
+        // "Prepayment_Percent"=> '',
+        // "Prepmt_Line_Amount"=> '',
+        // "Prepmt_Amt_Inv"=> '',
+        // "Allow_Invoice_Disc"=> '',
+        // "Inv_Discount_Amount"=> '',
+        // "Inv_Disc_Amount_to_Invoice"=> '',
+        // "Qty_to_Ship"=> '',
+        // "Quantity_Shipped"=> '',
+        // "Qty_to_Invoice"=> '',
+        // "Quantity_Invoiced"=> '',
+        // "Prepmt_Amt_to_Deduct"=> '',
+        // "Prepmt_Amt_Deducted"=> '',
+        // "Allow_Item_Charge_Assignment"=> '',
+        // "Qty_to_Assign"=> '',
+        // "Qty_Assigned"=> '',
+        // "Requested_Delivery_Date"=> '',
+        // "Promised_Delivery_Date"=> '',
+        // "Planned_Delivery_Date"=> '',
+        // "Planned_Shipment_Date"=> '',
+        // "Shipment_Date"=> '',
+        // "Shipping_Agent_Code"=> '',
+        // "Shipping_Agent_Service_Code"=> '',
+        // "Shipping_Time"=> '',
+        // "Work_Type_Code"=> '',
+        // "Whse_Outstanding_Qty"=> '',
+        // "Whse_Outstanding_Qty_Base"=> '',
+        // "ATO_Whse_Outstanding_Qty"=> '',
+        // "ATO_Whse_Outstd_Qty_Base"=> '',
+        // "Outbound_Whse_Handling_Time"=> '',
+        // "Blanket_Order_No"=> '',
+        // "Blanket_Order_Line_No"=> '',
+        // "FA_Posting_Date"=> '',
+        // "Depr_until_FA_Posting_Date"=> '',
+        // "Depreciation_Book_Code"=> '',
+        // "Use_Duplication_List"=> '',
+        // "Duplicate_in_Depreciation_Book"=> '',
+        // "Appl_from_Item_Entry"=> '',
+        // "Appl_to_Item_Entry"=> '',
+        // "Deferral_Code"=> '',
+        // "Shortcut_Dimension_1_Code"=> '',
+        // "Shortcut_Dimension_2_Code"=> '',
+        // "ShortcutDimCode3"=> '',
+        // "ShortcutDimCode4"=> '',
+        // "ShortcutDimCode5"=> '',
+        // "ShortcutDimCode6"=> '',
+        // "ShortcutDimCode7"=> '',
+        // "ShortcutDimCode8"=> '',
+        // "B2B_Special_Price"=> '',
+        //  "FOC_Scheme"=> 'foc',
+        // "Discount_Scheme"=> '',
+        // "Scheme_Item"=> '',
+           "FOC_Item"=> 'foc',
+        // "Scheme_Item_No"=> '',
+        // "Empties"=> '',
+        // "Loose_Item"=> '',
+        // "Discount_Amount_1_By_Amount"=> '',
+        // "Discount_Amount_1_By_Percent"=> '',
+        // "Discount_Amount_2_By_Amount"=> '',
+        // "Discount_Amount_2_By_Percent"=> '',
+        // "Scheme_No_2"=> '',
+        // "Scheme_No_3"=> '',
+        // "Scheme_No_4"=> '',
+        // "Scheme_No_5"=> '',
+        // "Loose_Item_Code"=> '',
+        // "Territory_Code"=> '',
+        // "Document_No"=> 'sales_order_code',
+        "Line_No"=> 'line_no',
+        // "Gross_Weight"=> '',
+        // "Net_Weight"=> '',
+        // "Unit_Volume"=> '',
+        // "Units_per_Parcel"=> '',
+        // "TotalSalesLine_Line_Amount"=> '',
+        // "Invoice_Discount_Amount"=> '',
+        // "Invoice_Disc_Pct"=> '',
+        // "Total_Amount_Excl_VAT"=> '',
+        // "Total_VAT_Amount"=> '',
+        // "Total_Amount_Incl_VAT"=> '',
+    );
+
+    /**
+     * attributes passed to the request in addition to the ones in $dict
+     */
+    const dict_ext = array(
+        "Scheme_No_1",
+        "Scheme_No_2",
+        "Scheme_No_3",
+        "Scheme_No_4",
+        "Scheme_No_5"
+    );
+
+    public $id;
+    public $sales_order_id;
+    public $product_code;
+    public $quantity;
+    public $weight;
+    public $cbm;
+    public $unit_price;
+    public $discount_no;
+    public $discount_amount = 0;
+    public $total_amount;
+    public $added_when;
+    public $added_by;
+    public $edited_when;
+    public $edited_by;
+    public $deleted_when;
+    public $deleted_by;
+    public $deleted;
+    public $discount;
+    public $discount_description;
+    public $pricing_type;
+    public $disc_type;
+	public $foc_item;
+	public $foc = 0;
+    public $disctag;
+    public $con_granted;
+    public $applied;
+    public $con_sellprice;
+    public $remarks;
+    public $priceaddon;
+    public $discount_parse;
+    public $line_no;
+	public $sales_order_code;
+
+    /**
+     * Fields not in table
+     */
+    public $type;
+    public $sku_code;
+    public $location_code;
+    public $empties_type;
+    public $discount_scheme = 0;
+    public $ms_dynamics_key;
+    public $Scheme_No_1;
+    public $Scheme_No_2;
+    public $Scheme_No_3;
+    public $Scheme_No_4;
+    public $Scheme_No_5;
+
+    /**
+     * Returns value using MSD key.
+     */
+    public function MSD($key)
+    {
+        if (array_key_exists($key, SalesOrderDetailData::dict)) {
+            $key_val = SalesOrderDetailData::dict[$key];
+            return $this->$key_val;
+        } else
+            return null;
+    }
+
+    /**
+     * Sets value using MSD key.
+     */
+    public function setMSD($key, $value)
+    {
+        if (array_key_exists($key, SalesOrderDetailData::dict)) {
+            $key_val = SalesOrderDetailData::dict[$key];
+            $this->$key_val = $value;
+        }
+    }
+
+    /**
+     * Checks if MSD value exists.
+     */
+    public function hasMSD($key)
+    {
+        return array_key_exists($key, SalesOrderDetailData::dict);
+    }
+
+    /**
+     * Get key via NOC name.
+     * 
+     */
+    public function NOC($key)
+    {
+        if (isset($this->$key))
+            return $this->$key;
+        else
+            return null;
+    }
+
+    /**
+     * Gets the MSD name from NOC key
+     * 
+     */
+    public function getMSDNamefromNoc($key)
+    {
+        return array_search($key, SalesOrderDetailData::dict);
+    }
+
+    /**
+     * Create XML array for MSD.
+     * 
+     */
+    public function xmlMSDArrayString()
+    {
+        $xml_string = '<ns1:Sales_Line_Service>';
+        foreach (SalesOrderDetailData::dict as $key => $value) {
+			if(!isset($this->$value) || $this->$value == "" || $this->$value == null)
+				continue;
+            $xml_string .= "<ns1:" . $key . ">" . ((isset($this->$value) || $this->$value !== NULL) ? htmlspecialchars($this->$value, ENT_XML1 | ENT_COMPAT, 'UTF-8') : "") . "</ns1:" . $key . ">\n";
+        }
+        foreach (SalesOrderDetailData::dict_ext as $value2) {
+			if(!isset($this->$value) || $this->$value == "" || $this->$value == null)
+				continue;
+            $xml_string .= "<ns1:" . $value2 . ">" . ((isset($this->$value2) || $this->$value2 !== NULL) ? htmlspecialchars($this->$value2, ENT_XML1 | ENT_COMPAT, 'UTF-8') : "") . "</ns1:" . $value2 . ">\n";
+        }
+        $xml_string .= '</ns1:Sales_Line_Service>';
+        return  $xml_string;
+    }
+
+    /**
+     * Create XML array for MSD.
+     * 
+     */
+    public function xmlMSDUpdateArrayString()
+    {
+        $xml_string = '<ns1:Sales_Line_Service>';
+        foreach (SalesOrderDetailData::dict as $key => $value) {
+			if(!isset($this->$value) || $this->$value == "" || $this->$value == null || ($key == "Key" || $key == "Document_No"))
+				continue;
+            $xml_string .= "<ns1:" . $key . ">" . ((isset($this->$value) || $this->$value !== NULL) ? htmlspecialchars($this->$value, ENT_XML1 | ENT_COMPAT, 'UTF-8') : "") . "</ns1:" . $key . ">\n";
+        }
+        foreach (SalesOrderDetailData::dict_ext as $value2) {
+			if((!isset($this->$value2) || $this->$value2 == "" || $this->$value2 == null) )
+				continue;
+            $xml_string .= "<ns1:" . $value2 . ">" . ((isset($this->$value2) || $this->$value2 !== NULL) ? htmlspecialchars($this->$value2, ENT_XML1 | ENT_COMPAT, 'UTF-8') : "") . "</ns1:" . $value2 . ">\n";
+        }
+        $xml_string .= '</ns1:Sales_Line_Service>';
+        return  $xml_string;
+    }
+    /**
+     * Create XML array for MSD TransferOrderSubform.
+     * 
+     */
+    public function xmlMSDSubformArrayString()
+    {
+        $xml_string = '<ns1:SalesOrderSubfrom>';
+        foreach (SalesOrderDetailData::dict as $key => $value) {
+			if(!isset($this->$value) || $this->$value == "" || $this->$value == null)
+				continue;
+            $xml_string .= "<ns1:" . $key . ">" . ((isset($this->$value) || $this->$value !== NULL) ? htmlspecialchars($this->$value, ENT_XML1 | ENT_COMPAT, 'UTF-8') : "") . "</ns1:" . $key . ">\n";
+        }
+        $xml_string .= '</ns1:SalesOrderSubfrom>';
+        return  $xml_string;
+    }
+	
+	
+}

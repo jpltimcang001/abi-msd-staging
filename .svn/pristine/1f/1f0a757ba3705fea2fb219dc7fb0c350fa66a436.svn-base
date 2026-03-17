@@ -1,0 +1,5 @@
+cd c:\
+cd %~dp0\..
+cls
+php artisan api:invoice --sales-office="750300" --company="Parallel" --so_code="UNS"
+timeout /t 5 /nobreak

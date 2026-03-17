@@ -1,0 +1,131 @@
+<?php
+
+namespace App\Utils;
+
+class Params
+{
+    public static function values()
+    {
+        return array(
+            'server_ip' => 'http://localhost/abi_msdynamics_integration_api/public',
+            'abi_wms_company_code' => 'ABI-SALES',
+            'webservice' => array(
+                'abi_noc_central' => array(
+                    'url' => 'http://localhost/abi_noc_central_webservice/index.php?r=api/webservice',
+                    'end_point' => 'http://localhost/abi_noc_central_webservice/index.php?r=api/webservice&ws=1',
+                ),
+                'abi_msd' => array(
+                    'credential' => array(
+                        'user' => 'InOneGo',
+                        'password' => 'Inonego@13778',
+                        'base_url' => 'http://abinav.southeastasia.cloudapp.azure.com:8047/ABINavUSer/WS',
+                        'company_id' => '',
+                    ),
+                    'route' => array(
+                        /* Download */
+                        'customer-discount-group' => array(
+                            'list' => 'CustomerDiscountGroup',
+                        ),
+                        'customer-price-group' => array(
+                            'list' => 'CustomerPriceGroup',
+                        ),
+                        'customer-posting-group' => array(
+                            'list' => 'CustomerPostingGroup',
+                        ),
+                        'gen-bus-posting-group' => array(
+                            'list' => 'GenBusinessPostingGroup',
+                        ),
+                        'vat-bus-posting-group' => array(
+                            'list' => 'VATBusinessPostingGroup',
+                        ),
+                        'payment-method' => array(
+                            'list' => 'PaymentMethod',
+                        ),
+                        'payment-terms' => array(
+                            'list' => 'PaymentTerms',
+                        ),
+                        'distribution-channel' => array(
+                            'list' => 'OutletType',
+                        ),
+                        'location' => array(
+                            'list' => 'Locations',
+                        ),
+                        'salesman-type' => array(
+                            'list' => 'ServiceModel',
+                        ),
+                        'salesman' => array(
+                            'list' => 'SalespersonPurchaser',
+                        ),
+                        'stock-in-salesman-warehouse' => array(
+                            'list' => 'DownloadStockinSalesmanWarehouse',
+                        ),
+                        'customer' => array(
+                            'list' => 'Customer',
+                        ),
+                        'product' => array(
+                            'list' => 'Items',
+                        ),
+                        'product-bom' => array(
+                            'list' => 'BOMComponentsService',
+                        ),
+                        'sales-price' => array(
+                            'list' => 'SalesPriceService',
+                        ),
+                        'promotion' => array(
+                            'list' => 'PromotionList',
+                        ),
+                        'promotion-line' => array(
+                            'list' => 'PromotionSchemeLineSubform',
+                        ),
+                        'promotion-customer' => array(
+                            'list' => 'PromotionCustomerList',
+                        ),
+                        'promotion-discount-line' => array(
+                            'list' => 'PromotionSchemeDiscountSubform',
+                        ),
+                        'promotion-budget' => array(
+                            'list' => 'PromotionSalesOfficeWise',
+                        ),
+                        'posted-invoice' => array(
+                            'list' => 'PostedSalesInvoicesService',
+                        ),
+                        'posted-invoice-line' => array(
+                            'list' => 'PostedSalesInvoiceLinesSCM',
+                        ),
+                        /* Upload */
+                        'transfer-order' => array(
+                            'list' => 'TransferOrderService',
+                        ),
+                        'transfer-order-subform' => array(
+                            'list' => 'TransferOrderSubform',
+                        ),
+                        'reservation-entry' => array(
+                            'list' => 'ReservationEntriesService',
+                        ),
+                        'sales-order' => array(
+                            'list' => 'SalesOrderService',
+                        ),
+                        'sales-order-line' => array(
+                            'list' => 'SalesOrderSubfrom',
+                        ),
+                        'sales-order-post' =>  array(
+                            'list' => 'SalesOrderPostService',
+                        ),
+                        'stock-conversion' => array(
+                            'list' => 'StockConversionService',
+                        ),
+                        'cash-receipt-journal' => array(
+                            'list' => 'CashReceiptJournals',
+                        ),
+                        'sales-credit-memo' => array(
+                            'list' => 'SalesCreditMemoCard',
+                        ),
+                        'new-customer-creation-request' => array(
+                            'list' => 'CustomerRequestCard',
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
+}

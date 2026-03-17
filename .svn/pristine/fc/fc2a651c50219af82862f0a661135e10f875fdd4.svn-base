@@ -1,0 +1,317 @@
+<?php
+
+namespace App\Utils;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use SoapClient;
+use SoapFault;
+use SoapHeader;
+use SoapVar;
+
+class Globals extends Model
+{
+    public static function soapClientABINOCCentralWS()
+    {
+        ini_set('default_socket_timeout', 5000);
+
+        return new SoapClient(Params::values()['webservice']['abi_noc_central']['url'], array(
+            'location' => Params::values()['webservice']['abi_noc_central']['end_point'],
+            'trace' => true,
+            'use' => SOAP_LITERAL,
+            'cache_wsdl' => WSDL_CACHE_NONE,
+            'keep_alive' => false,
+            "connection_timeout" => 5000,
+            "stream_context" => stream_context_create(
+                array(
+                    'ssl' => array(
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                    )
+                )
+            )
+        ));
+    }
+
+    public static function callRESTAPI($method, $url, $data)
+    {
+        $curl = curl_init();
+        switch ($method) {
+            case "POST":
+                curl_setopt($curl, CURLOPT_POST, 1);
+                if ($data)
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                break;
+            case "PUT":
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+                if ($data)
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                break;
+            default:
+                if ($data)
+                    $url = sprintf("%s?%s", $url, http_build_query($data));
+        }
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+
+        /** Execute */
+        $result = curl_exec($curl);
+        if (!$result) {
+            die("Connection Failure");
+        }
+        curl_close($curl);
+        return $result;
+    }
+	
+	/**
+	* Create url for loadboard
+	* @param url the function called for api
+	*
+	* @return string the full url
+	*/
+    public static function createLoadboardURL($url){
+		return Params::values()['webservice']['abi_loadboard']['url'] . Params::values()['webservice']['abi_loadboard']['route'][$url];
+	}
+
+    public static function callLoadboardAPI($method, $url, $data)
+    {
+        $curl = curl_init();
+        switch ($method) {
+            case "POST":
+                curl_setopt($curl, CURLOPT_POST, 1);
+                if ($data)
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                break;
+            case "PUT":
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+                if ($data)
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                break;
+			case "GET":
+				curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+                $url = sprintf("%s?%s", $url, urlencode(json_encode($data)));			
+            default:
+                if ($data)
+                    $url = sprintf("%s?%s", $url, http_build_query($data));
+        }
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+
+        /** Execute */
+        $result = curl_exec($curl);
+        if (!$result) {
+            die("Connection Failure");
+        }
+        curl_close($curl);
+        return $result;
+    }
+	
+
+    /**
+     * Calls MSD SOAP function ReadMultiple of specific SOAP url. 
+     * 
+     * @param url The URL of SOAP
+     * 
+     * @return object the result of the soap call
+     */
+    public static function callSoapApiReadMultiple($url, $data, $sales_office_no = '', $setSize = 0, $bookmark_key = 0)
+    {
+        set_time_limit(0);
+        ini_set('memory_limit', '-1');
+        $client = new SoapClient($url, array(
+            'trace' => true,
+            'login' => Globals::getSoapOptions( $sales_office_no)['username'],
+            'password' => Globals::getSoapOptions( $sales_office_no)['password'],
+        ));
+
+        /* Filters for soap request for future implementation, add $array as ReadMultiple($array) */
+        $array = array('filter' => array(), 'setSize' => "");
+        if (isset($data['params']) && count($data['params']) > 0) {
+            foreach ($data['params'] as $field => $criteria) {
+				if(is_array($criteria)) {
+					foreach ($criteria as $field2 => $criteria2) {
+					
+					$array['filter'][] = [
+						'Field' => $field2,
+						'Criteria' => $criteria2,
+					];
+					}
+					continue;
+				}
+				if($criteria != "")
+					$array['filter'][] = [
+						'Field' => $field,
+						'Criteria' => $criteria,
+					];
+            }
+        }
+		if($setSize > 0) {
+			$array['setSize'] = $setSize;
+		}
+		if($bookmark_key > 0) {
+			$array['bookmarkKey'] = $bookmark_key;
+		}
+        try {
+            return $client->ReadMultiple($array);
+        } catch (SoapFault $e) {
+            print_r($client->__getLastResponse());
+        }
+    }
+
+    /**
+     * Calls MSD SOAP function ReadMultiple of specific SOAP url. 
+     * 
+     * @param url The URL of SOAP
+     * 
+     * @return object the result of the soap call
+     */
+    public static function callSoapApiCreate($url, $data, $sales_office_no = '')
+    {
+        $client = new SoapClient($url, array(
+            'trace' => true,
+            'login' => Globals::getSoapOptions( $sales_office_no)['username'],
+            'password' => Globals::getSoapOptions( $sales_office_no)['password'],
+
+        ));
+
+        try {
+            return $client->Create($data);
+        } catch (SoapFault $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Calls MSD SOAP function ReadMultiple of specific SOAP url. 
+     * 
+     * @param url The URL of SOAP
+     * 
+     * @return object the result of the soap call
+     */
+    public static function callSoapApiUpdate($url, $data, $sales_office_no = '')
+    {
+        $client = new SoapClient($url, array(
+            'trace' => true,
+            'login' => Globals::getSoapOptions( $sales_office_no)['username'],
+            'password' => Globals::getSoapOptions( $sales_office_no)['password'],
+
+        ));
+
+        try {
+            return $client->Update($data);
+        } catch (SoapFault $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Calls MSD SOAP function Read of specific SOAP url. 
+     * 
+     * @param url The URL of SOAP
+     * 
+     * @return object the result of the soap call
+     */
+    public static function callSoapApiRead($url, $data, $sales_office_no = '')
+    {
+        $client = new SoapClient($url, array(
+            'trace' => true,
+            'login' => Globals::getSoapOptions( $sales_office_no)['username'],
+            'password' => Globals::getSoapOptions( $sales_office_no)['password'],
+
+        ));
+
+        try {
+            return $client->Read($data);
+        } catch (SoapFault $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * Calls MSD SOAP function of specific SOAP url. 
+     * 
+     * @param url The URL of SOAP
+     * @param data the data to be sent
+     * @param function the function to be called
+     * @param sales_office_no the sales of
+     * 
+     * @return object the result of the soap call
+     */
+    public static function callSoapApiOther($url, $data, $function, $sales_office_no = '')
+    {
+        $client = new SoapClient($url, array(
+            'trace' => true,
+            'login' => Globals::getSoapOptions($sales_office_no)['username'],
+            'password' => Globals::getSoapOptions($sales_office_no)['password'],
+
+        ));
+
+        try {
+            return $client->$function($data);
+        } catch (SoapFault $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public static function getSoapOptions($sales_office_no = '')
+    {
+        switch($sales_office_no) {
+            case "710200":
+                return array(
+                    'username' =>  'INONEGO-BAE',
+                    'password' =>  "HHpass@753",
+                );
+            case "710100":
+                return array(
+                    'username' =>  'INONEGO-PAS',
+                    'password' =>  "HHpass@753",
+                );
+            case "750200":
+                return array(
+                    'username' =>  'INONEGO-SUC',
+                    'password' =>  "HHpass@753",
+                );
+            case "750300":
+                return array(
+                    'username' =>  'INONEGO-UNS',
+                    'password' =>  "HHpass@753",
+                );
+            default:
+                return array(
+                    'username' =>  Params::values()['webservice']['abi_msd']['credential']['user'],
+                    'password' =>  Params::values()['webservice']['abi_msd']['credential']['password'],
+                );
+        }
+    }
+
+    public static function soapABIMSDynamicsURL($route, $company = "BII", $url_1 = "Page")
+    {
+        return Params::values()['webservice']['abi_msd']['credential']['base_url'] . "/" . $company . "/" . $url_1 . "/" . $route;
+    }
+
+    public static function soapABIMSDynamicsURL2($route, $company = "BII", $url_1 = "Page")
+    {
+        return Params::values()['webservice']['abi_msd']['credential']['base_url'] . "/" . $company . "/" . $url_1 . "/" . $route;
+    }
+
+    public static function saveJsonFile($file_name, $data)
+    {
+        set_time_limit(0);
+        ini_set('memory_limit', '-1');
+        Storage::put($file_name . ".JSON", json_encode($data, JSON_PRETTY_PRINT));
+    }
+
+    public static function saveStringJson($file_name, $data)
+    {
+        set_time_limit(0);
+        ini_set('memory_limit', '-1');
+        Storage::put($file_name . ".JSON", $data);
+    }
+
+    public static function getWmsCompanyCode()
+    {
+        return Params::values()['abi_wms_company_code'];
+    }
+}
