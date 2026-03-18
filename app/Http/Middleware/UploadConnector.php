@@ -2,67 +2,64 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Database\Eloquent\Model;
-use SoapClient;
-use SoapFault;
-use SoapVar;;
-use DB;
-use Carbon\Carbon;
-/* Jobs */
-use App\Jobs\APIJobSalesOrderHandler as APIJobSalesOrderHandler;
+use App\Data\CashEmptiesAdjustmentsData;
+use App\Data\CashReceiptData as CashReceiptData;
+use App\Data\InvoiceData;
+use App\Data\InvoiceDetailData;
+use App\Data\LocationData as LocationData;
+use App\Data\NewCustomerRequestData;
+use App\Data\OutgoingInventoryData;
+use App\Data\OutgoingInventoryDetailData;
+use App\Data\OutgoingNotificationData as OutgoingNotificationData;
+use App\Data\OutgoingNotificationDetailData as OutgoingNotificationDetailData;
+use App\Data\ReservationEntryData as ReservationEntryData;
+use App\Data\SalesCreditMemoData;
+use App\Data\SalesCreditMemoLineData;
+use App\Data\SalesOrderData;
+use App\Data\SalesOrderDetailData;
+use App\Data\SalesShipmentData as SalesShipmentData;
+use App\Data\StockConversionData as StockConversionData;
+use App\Data\TransferOrderData as TransferOrderData;
+use App\Data\TransferOrderDetailData as TransferOrderDetailData;
 use App\Jobs\APIJobHandler;
-/* Utils */
-use App\Utils\Globals;
-use App\Utils\Params;
-use App\Utils\Utils;
-/* Model */
+use App\Jobs\APIJobSalesOrderHandler as APIJobSalesOrderHandler;
 use App\Model\noc\CAF as CAF;
-use App\Model\noc\CAFApplCreditReqQuestion;
 use App\Model\noc\CAFApplCreditReqAnswer;
-use App\Model\wms\Employee as WMSEmployee;
-use App\Model\wms\IncomingInventory;
-use App\Model\wms\IncomingInventoryDetail;
+use App\Model\noc\CAFApplCreditReqQuestion;
+use App\Model\noc\DealsPromotion;
+use App\Model\noc\DiscountCase;
+use App\Model\noc\Invoice;
+use App\Model\noc\InvoiceDetails;
 use App\Model\noc\Location as Location;
 use App\Model\noc\LocationDetail as LocationDetail;
-use App\Model\wms\OutgoingInventory;
-use App\Model\wms\OutgoingInventoryDetail;
-use App\Model\wms\OutgoingNotification as WMSOutgoingNotification;
-use App\Model\wms\OutgoingNotificationDetail as WMSOutgoingNotificationDetail;
-use App\Model\noc\Salesman as Salesman;
 use App\Model\noc\SalesGroup as SalesGroup;
-use App\Model\wms\Salesman as WMSSalesman;
+use App\Model\noc\Salesman as Salesman;
 use App\Model\noc\SalesOffice as SalesOffice;
-use App\Model\wms\SalesOffice as WMSSalesOffice;
 use App\Model\noc\SalesOrder;
 use App\Model\noc\SalesOrderDetail;
 use App\Model\noc\SalesOrderReturnable;
 use App\Model\noc\Sku;
 use App\Model\noc\TempCollectionCash;
-use App\Model\noc\Invoice;
-use App\Model\noc\InvoiceDetails;
-use App\Model\noc\DiscountCase;
-use App\Model\noc\DealsPromotion;
+use App\Model\wms\Employee as WMSEmployee;
+use App\Model\wms\IncomingInventory;
+use App\Model\wms\IncomingInventoryDetail;
+use App\Model\wms\OutgoingInventory;
+use App\Model\wms\OutgoingInventoryDetail;
+use App\Model\wms\OutgoingNotification as WMSOutgoingNotification;
+use App\Model\wms\OutgoingNotificationDetail as WMSOutgoingNotificationDetail;
+use App\Model\wms\Salesman as WMSSalesman;
+use App\Model\wms\SalesOffice as WMSSalesOffice;
 use App\Model\wms\Zone as WMSZone;
-/* Schema */
-use App\Data\InvoiceData;
-use App\Data\InvoiceDetailData;
-use App\Data\OutgoingInventoryData;
-use App\Data\OutgoingInventoryDetailData;
-use App\Data\OutgoingNotificationData as OutgoingNotificationData;
-use App\Data\OutgoingNotificationDetailData as OutgoingNotificationDetailData;
-use App\Data\LocationData as LocationData;
-use App\Data\SalesOrderData;
-use App\Data\SalesOrderDetailData;
-use App\Data\SalesCreditMemoData;
-use App\Data\SalesCreditMemoLineData;
-use App\Data\NewCustomerRequestData;
-use App\Data\CashEmptiesAdjustmentsData;
-use App\Data\SalesShipmentData as SalesShipmentData;
-use App\Data\StockConversionData as StockConversionData;
-use App\Data\ReservationEntryData as ReservationEntryData;
-use App\Data\CashReceiptData as CashReceiptData;
-use App\Data\TransferOrderData as TransferOrderData;
-use App\Data\TransferOrderDetailData as TransferOrderDetailData;
+use App\Utils\Globals;
+use App\Utils\Params;
+use App\Utils\Utils;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
+use SoapClient;
+use SoapFault;
+use SoapVar;;
 
 class UploadConnector extends Model
 {
@@ -1019,7 +1016,10 @@ class UploadConnector extends Model
 		
 		if($json['type'] == 5 and $json['transaction_type'] == 2) {
 			$route = Params::values()['webservice']['abi_msd']['route']['cash-receipt-journal']['list'];
+            Log::info("route: " . $route);
+            Log::info("company: " . $company);
 			$crurl = Globals::soapABIMSDynamicsURL($route, $company);
+            Log::info("crurl: " . $crurl);
 			UploadConnector::syncMSDCashReceiptCollectionQueue($method, $crurl, $json, $sales_office_no, $trigger_id);
 			return;
 		}
