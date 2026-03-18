@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use SoapClient;
 use SoapFault;
@@ -313,6 +314,7 @@ class Globals extends Model
 
     public static function soapABIMSDynamicsURL($route, $company = "BII", $url_1 = "Page")
     {
+        Log::info("soapABIMSDynamicsURL: " . Params::values()['webservice']['abi_msd']['credential']['base_url'] . "/" . $company . "/" . $url_1 . "/" . $route);
         return Params::values()['webservice']['abi_msd']['credential']['base_url'] . "/" . $company . "/" . $url_1 . "/" . $route;
     }
 

@@ -1817,6 +1817,11 @@ class DownloadConnector extends Model
                         case "ItemNo":
                             $uom = isset($msd_soap_result->ReadMultiple_Result->SalesPriceService->UnitofMeasureCode) ? $msd_soap_result->ReadMultiple_Result->SalesPriceService->UnitofMeasureCode : "";
                             $msd_data_val->product_no = $att_value . '-' . $uom; // Append UOM required in CMOS
+                            break;
+                        case "UnitPrice":
+                            $att_value = DecimalTruncator::truncate($att_value, 2);
+                            break;
+
                     }
                     $msd_data_val->setMSD($att_key, $att_value);
                 }
