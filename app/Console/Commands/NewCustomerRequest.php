@@ -83,7 +83,7 @@ class NewCustomerRequest extends Command
             $so_params .= '</GetSalesOfficeCriteria>';
             $so_request = new SoapVar($so_params, XSD_ANYXML);
             $so_soap_result = (array) $soap_client->retrieveSalesOfficeByCriteria($so_request);
-
+			
             if (count($so_soap_result) > 0) {
                 foreach ($so_soap_result as $v_so) {
                     $data['company'] = $v_so->company;

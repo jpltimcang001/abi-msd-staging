@@ -72,7 +72,7 @@ class Params
                             'list' => 'DownloadStockinSalesmanWarehouse',
                         ),
                         'customer' => array(
-                            'list' => 'Customers',
+                            'list' => 'Customer',
                         ),
                         'product' => array(
                             'list' => 'Items',

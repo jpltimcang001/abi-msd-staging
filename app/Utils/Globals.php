@@ -180,6 +180,7 @@ class Globals extends Model
         try {
             return $client->Create($data);
         } catch (SoapFault $e) {
+			Log::error($e->getMessage());
             return $e->getMessage();
         }
     }

@@ -96,151 +96,414 @@ class DownloadConnector extends Model
      * 
      * @return void
      */
-    public static function syncMSDCustomer($method, $url, $data, $trigger_id = null)
-    {
-        set_time_limit(0);
-        ini_set('memory_limit', '-1');
-        $sales_office_no = isset($data['sales_office_no']) ? $data['sales_office_no'] : "";
-        $batch_enabled = isset($data['batch_enabled']) && $data['batch_enabled'] ? true : false;
-        $short_desc = isset($data['params']['Global_Dimension_1_Code']) ? $data['params']['Global_Dimension_1_Code'] : "";
-        $salesman_code = isset($data['params']['Salesperson_Code']) ? $data['params']['Salesperson_Code'] : "";
-		$location_code =  isset($data['params']['No']) ? $data['params']['No'] : "";
-		$date_from =  isset($data['params']['Last_Date_Modified']) ? $data['params']['Last_Date_Modified'] : "";		
+    // public static function syncMSDCustomer($method, $url, $data, $trigger_id = null)
+    // {
+		// gc_enable();
+        // set_time_limit(0);
+        // ini_set('memory_limit', '-1');
+        // $sales_office_no = isset($data['sales_office_no']) ? $data['sales_office_no'] : "";
+        // $batch_enabled = isset($data['batch_enabled']) && $data['batch_enabled'] ? true : false;
+        // $short_desc = isset($data['params']['Global_Dimension_1_Code']) ? $data['params']['Global_Dimension_1_Code'] : "";
+        // $salesman_code = isset($data['params']['Salesperson_Code']) ? $data['params']['Salesperson_Code'] : "";
+		// $location_code =  isset($data['params']['No']) ? $data['params']['No'] : "";
+		// $date_from =  isset($data['params']['Last_Date_Modified']) ? $data['params']['Last_Date_Modified'] : "";		
         
-		DB::table('location')
-		->join('location_details', 'location.id', '=', 'location_details.location_id')
-		->where(function($q) { 
-			$q->whereNotNull('location_details.ms_dynamics_key')
-			  ->orWhere('location_details.ms_dynamics_key', '<>', '');
-		})
-		->when($sales_office_no, function ($query) use ($sales_office_no) {
-			$query->where('location.sales_office_no', '=', $sales_office_no);
-		})
-		->when($salesman_code, function ($query) use ($salesman_code) {
-			$query->where('location.salesman_code', '=', $salesman_code);
-		})
-		->when($location_code, function ($query) use ($location_code) {
-			$query->where('location.code', '=', $location_code);
-		})
-		->update([
-			'location.deleted' => 1,
-			'location.deleted_by' => DownloadConnector::MSD_LOGGER_NAME,
-			'location.deleted_when' => date('Y-m-d H:i:s'),
-		]);
+		// DB::table('location')
+		// ->join('location_details', 'location.id', '=', 'location_details.location_id')
+		// ->where(function($q) { 
+			// $q->whereNotNull('location_details.ms_dynamics_key')
+			  // ->orWhere('location_details.ms_dynamics_key', '<>', '');
+		// })
+		// ->when($sales_office_no, function ($query) use ($sales_office_no) {
+			// $query->where('location.sales_office_no', '=', $sales_office_no);
+		// })
+		// ->when($salesman_code, function ($query) use ($salesman_code) {
+			// $query->where('location.salesman_code', '=', $salesman_code);
+		// })
+		// ->when($location_code, function ($query) use ($location_code) {
+			// $query->where('location.code', '=', $location_code);
+		// })
+		// ->update([
+			// 'location.deleted' => 1,
+			// 'location.deleted_by' => DownloadConnector::MSD_LOGGER_NAME,
+			// 'location.deleted_when' => date('Y-m-d H:i:s'),
+		// ]);
 		
-		print_r("[" . date("Y-m-d H:i:s") . "] Downloading.\n");
+		// print_r("[" . date("Y-m-d H:i:s") . "] Downloading.\n");	
 		
-        $soap_client = Globals::soapClientABINOCCentralWS();
-        $msd_soap_result = Globals::callSoapApiReadMultiple($url, $data, $sales_office_no);
-		if($msd_soap_result) {
-			print_r("[" . date("Y-m-d H:i:s") . "] Downloaded Data from " . $salesman_code . "\n");
+        // $soap_client = Globals::soapClientABINOCCentralWS();
+        // $msd_soap_result = Globals::callSoapApiReadMultiple($url, $data, $sales_office_no);
+		// if($msd_soap_result) {
+			// print_r("[" . date("Y-m-d H:i:s") . "] Downloaded Data from " . $salesman_code . "\n");
 			
-		}
-		$msd_data = array();
+		// }
+		// $msd_data = array();
        
-        if (isset($msd_soap_result->ReadMultiple_Result->Customers)) {
-            $msd_init_data = $msd_soap_result->ReadMultiple_Result->Customers;
+        // if (isset($msd_soap_result->ReadMultiple_Result->Customer)) {
+            // $msd_init_data = $msd_soap_result->ReadMultiple_Result->Customer;
+			// file_put_contents(storage_path("customers-readmultiple-result.json"), json_encode($msd_init_data, JSON_PRETTY_PRINT));
+            // if (count($msd_init_data) === 1) {
+                // $msd_init_data = array($msd_soap_result->ReadMultiple_Result->Customer);
+            // }
+			// print_r("[" . date("Y-m-d H:i:s") . "] Found " . strval(count($msd_init_data) ) . " Customer Data.\n");
+            // foreach ($msd_init_data as $value) {
+                // $msd_data_val = new LocationData();
+                // $service_call_days = array();
 
-            if (count($msd_init_data) === 1) {
-                $msd_init_data = array($msd_soap_result->ReadMultiple_Result->Customers);
-            }
-			print_r("[" . date("Y-m-d H:i:s") . "] Found " . strval(count($msd_init_data) ) . " Customer Data.\n");
-            foreach ($msd_init_data as $value) {
-                $msd_data_val = new LocationData();
-                $service_call_days = array();
+                // foreach (get_object_vars($value) as $att_key => $att_value) {
+                    // switch ($att_key) {
+                        // case "Sunday":
+                            // if ($att_value == 1)
+                                // $service_call_days[] = "1";
+                            // break;
+                        // case "Monday":
+                            // if ($att_value == 1)
+                                // $service_call_days[] = "2";
+                            // break;
+                        // case "Tuesday":
+                            // if ($att_value == 1)
+                                // $service_call_days[] = "3";
+                            // break;
+                        // case "Wednesday":
+                            // if ($att_value == 1)
+                                // $service_call_days[] = "4";
+                            // break;
+                        // case "Thursday":
+                            // if ($att_value == 1)
+                                // $service_call_days[] = "5";
+                            // break;
+                        // case "Friday":
+                            // if ($att_value == 1)
+                                // $service_call_days[] = "6";
+                            // break;
+                        // case "Saturday":
+                            // if ($att_value == 1)
+                                // $service_call_days[] = "7";
+                            // break;
+						// case "Blocked":
+							// if($att_value == "All") {
+								// $msd_data_val->deleted = 1;
+							// }
+							// break;
+                        // default:
+                            // $msd_data_val->setMSD($att_key, $att_value);
+                            // break;
+                    // }
+                // }
+                // $msd_data_val->approval_status = 1;
+                // $msd_data_val->added_by = DownloadConnector::MSD_LOGGER_NAME;
+                // $msd_data_val->updated_by = DownloadConnector::MSD_LOGGER_NAME;
+                // $msd_data_val->synced_when = date('Y-m-d H:i:s');
+                // $msd_data_val->service_call_days = implode(";", $service_call_days);
+                // $msd_data[] = $msd_data_val;
+            // }
+            // /* Save generated response as file backup */
+            // $file_name = DownloadConnector::PATH . ($trigger_id != null ? $trigger_id . "-" : "") . date("YmdHis-") . str_replace(" ", "-", LocationData::MODULE_LOCATION);
+            // Globals::saveJsonFile($file_name, $msd_soap_result->ReadMultiple_Result->Customer);
+        // }
+		// gc_collect_cycles();
+        // $total_rows = count($msd_data);
+        // if (!$batch_enabled)
+            // Utils::updateTriggerTotalRows($trigger_id, $total_rows); /* Update trigger total rows */
+        // Utils::updateTriggerStatus($trigger_id, DownloadConnector::STATUS_ONGOING); /* Update trigger status */
+        // if ($total_rows > 0) {
+            // $batch_data = array_chunk($msd_data, 50); // Create batch
 
-                foreach (get_object_vars($value) as $att_key => $att_value) {
-                    switch ($att_key) {
-                        case "Sunday":
-                            if ($att_value == 1)
-                                $service_call_days[] = "1";
-                            break;
-                        case "Monday":
-                            if ($att_value == 1)
-                                $service_call_days[] = "2";
-                            break;
-                        case "Tuesday":
-                            if ($att_value == 1)
-                                $service_call_days[] = "3";
-                            break;
-                        case "Wednesday":
-                            if ($att_value == 1)
-                                $service_call_days[] = "4";
-                            break;
-                        case "Thursday":
-                            if ($att_value == 1)
-                                $service_call_days[] = "5";
-                            break;
-                        case "Friday":
-                            if ($att_value == 1)
-                                $service_call_days[] = "6";
-                            break;
-                        case "Saturday":
-                            if ($att_value == 1)
-                                $service_call_days[] = "7";
-                            break;
+            // foreach ($batch_data as $key => $batch) {
+
+                // $batch_params = '<GetBatchLocationCriteria xsi:type="urn:GetLocationCriteriaArray" soap-enc:arrayType="urn:GetLocationCriteria[]">';
+                // foreach ($batch as $line) {
+                    // $batch_params .= $line->xmlArrayLineStrings();
+                // }
+                // $batch_params .= '</GetBatchLocationCriteria>';
+                // $batch_request = new SoapVar($batch_params, XSD_ANYXML);
+
+                // $soap_result = (array) $soap_client->saveBatchLocation($batch_request);
+                // /** Log response message */
+                // Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . LocationData::MODULE_NAME_LOCATION . "]-[" . $short_desc . "|" . json_encode($salesman_code) . "] " . $soap_result['message'], ""); /* Save log info message */
+                
+				// print_r("[" . date("Y-m-d H:i:s") . "] " . $soap_result['message'] . "\n");
+				// /** Log total rows */
+                // if ($key === 0) {
+                    // Utils::updateTriggerTotalRows($trigger_id, $soap_result['total_rows'], $batch_enabled); /* Update trigger total rows */
+                // } else {
+                    // Utils::updateTriggerTotalRows($trigger_id, $soap_result['total_rows'], true); /* Update trigger total rows = existing + response total_rows */
+                // }
+                // /** Log failed rows */
+                // Utils::updateTriggerFailedRows($trigger_id, $soap_result['failed_rows'], true); /* Update trigger failed rows = existing + response failed_rows */
+                // /** Log response error */
+                // if (isset($soap_result['error']) && $soap_result['error'] > 0) {
+                    // foreach ($soap_result['error'] as $k_e => $v_err_msg) {
+						// print_r("[" . date("Y-m-d H:i:s") . "] " . $v_err_msg . "\n");
+                        // Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::ERROR, DownloadConnector::MSD_LOGGER_NAME, "[" . LocationData::MODULE_NAME_LOCATION . "]-[" . $short_desc . "|" . json_encode($salesman_code) . "]" . Utils::logMsg($v_err_msg), ""); /* Save log error message */
+                    // }
+                // }
+				// unset($batch_params);
+				// unset($batch_request);
+				// unset($soap_result);
+				// unset($batch);
+
+				// gc_collect_cycles();
+            // }
+			// unset($batch_data);
+			// unset($msd_data);
+
+			// gc_collect_cycles();
+        // } else {
+            // Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::ERROR, DownloadConnector::MSD_LOGGER_NAME, "[" . LocationData::MODULE_NAME_LOCATION . "]-[" . $short_desc . "|" . json_encode($salesman_code) . "] No maintenance found.", ""); /* Save log info message */
+        // }
+    // }
+	public static function syncMSDCustomer($method, $url, $data, $trigger_id = null)
+	{
+		set_time_limit(0);
+		ini_set('memory_limit', '-1');
+
+		if (function_exists('gc_enable')) {
+			gc_enable();
+		}
+
+		$sales_office_no = isset($data['sales_office_no']) ? $data['sales_office_no'] : "";
+		$batch_enabled = isset($data['batch_enabled']) && $data['batch_enabled'] ? true : false;
+		$short_desc = isset($data['params']['Global_Dimension_1_Code']) ? $data['params']['Global_Dimension_1_Code'] : "";
+		$salesman_code = isset($data['params']['Salesperson_Code']) ? $data['params']['Salesperson_Code'] : "";
+		$location_code = isset($data['params']['No']) ? $data['params']['No'] : "";
+
+		// Soft delete
+		DB::table('location')
+			->join('location_details', 'location.id', '=', 'location_details.location_id')
+			->where(function ($q) {
+				$q->whereNotNull('location_details.ms_dynamics_key')
+				  ->orWhere('location_details.ms_dynamics_key', '<>', '');
+			})
+			->when($sales_office_no, function ($query) use ($sales_office_no) {
+				$query->where('location.sales_office_no', '=', $sales_office_no);
+			})
+			->when($salesman_code, function ($query) use ($salesman_code) {
+				$query->where('location.salesman_code', '=', $salesman_code);
+			})
+			->when($location_code, function ($query) use ($location_code) {
+				$query->where('location.code', '=', $location_code);
+			})
+			->update(array(
+				'location.deleted' => 1,
+				'location.deleted_by' => DownloadConnector::MSD_LOGGER_NAME,
+				'location.deleted_when' => date('Y-m-d H:i:s'),
+			));
+
+		$soap_client = Globals::soapClientABINOCCentralWS();
+	
+		$pageSize = 20;
+		$bookmarkKey = null;
+		$hasMoreData = true;
+		$iteration = 0;
+
+		print_r("[" . date("Y-m-d H:i:s") . "] Starting Paginated Download.\n");
+
+		do {
+
+			$iteration++;
+
+			$msd_soap_result = Globals::callSoapApiReadMultiple(
+				$url,
+				$data,
+				$sales_office_no,
+				$pageSize,
+				$bookmarkKey
+			);
+
+			if (
+				!$msd_soap_result ||
+				!isset($msd_soap_result->ReadMultiple_Result->Customer)
+			) {
+				$hasMoreData = false;
+
+				if ($iteration == 1) {
+					Utils::saveLog(
+						$trigger_id,
+						$sales_office_no,
+						date("Y-m-d H:i:s"),
+						DownloadConnector::ERROR,
+						DownloadConnector::MSD_LOGGER_NAME,
+						"No maintenance found.",
+						""
+					);
+				}
+
+				break;
+			}
+
+			$msd_init_data = $msd_soap_result->ReadMultiple_Result->Customer;
+
+			if (is_object($msd_init_data)) {
+				$msd_init_data = array($msd_init_data);
+			}
+
+			print_r("[" . date("Y-m-d H:i:s") . "] Page {$iteration}: Processing " . count($msd_init_data) . " records.\n");
+
+			$msd_data = array();
+
+			foreach ($msd_init_data as $value) {
+
+				$msd_data_val = new LocationData();
+				$service_call_days = array();
+
+				foreach (get_object_vars($value) as $att_key => $att_value) {
+
+					switch ($att_key) {
+
+						case "Key":
+							$bookmarkKey = $att_value;
+							$msd_data_val->ms_dynamics_key = $att_value;
+							break;
+
+						case "Sunday":
+							if ($att_value == 1) $service_call_days[] = "1";
+							break;
+
+						case "Monday":
+							if ($att_value == 1) $service_call_days[] = "2";
+							break;
+
+						case "Tuesday":
+							if ($att_value == 1) $service_call_days[] = "3";
+							break;
+
+						case "Wednesday":
+							if ($att_value == 1) $service_call_days[] = "4";
+							break;
+
+						case "Thursday":
+							if ($att_value == 1) $service_call_days[] = "5";
+							break;
+
+						case "Friday":
+							if ($att_value == 1) $service_call_days[] = "6";
+							break;
+
+						case "Saturday":
+							if ($att_value == 1) $service_call_days[] = "7";
+							break;
+
 						case "Blocked":
-							if($att_value == "All") {
+							if ($att_value == "All") {
 								$msd_data_val->deleted = 1;
 							}
 							break;
-                        default:
-                            $msd_data_val->setMSD($att_key, $att_value);
-                            break;
-                    }
-                }
-                $msd_data_val->approval_status = 1;
-                $msd_data_val->added_by = DownloadConnector::MSD_LOGGER_NAME;
-                $msd_data_val->updated_by = DownloadConnector::MSD_LOGGER_NAME;
-                $msd_data_val->synced_when = date('Y-m-d H:i:s');
-                $msd_data_val->service_call_days = implode(";", $service_call_days);
-                $msd_data[] = $msd_data_val;
-            }
-            /* Save generated response as file backup */
-            $file_name = DownloadConnector::PATH . ($trigger_id != null ? $trigger_id . "-" : "") . date("YmdHis-") . str_replace(" ", "-", LocationData::MODULE_LOCATION);
-            Globals::saveJsonFile($file_name, $msd_soap_result->ReadMultiple_Result->Customers);
-        }
-        $total_rows = count($msd_data);
-        if (!$batch_enabled)
-            Utils::updateTriggerTotalRows($trigger_id, $total_rows); /* Update trigger total rows */
-        Utils::updateTriggerStatus($trigger_id, DownloadConnector::STATUS_ONGOING); /* Update trigger status */
-        if ($total_rows > 0) {
-            $batch_data = array_chunk($msd_data, 50); // Create batch
 
-            foreach ($batch_data as $key => $batch) {
+						default:
+							$msd_data_val->setMSD($att_key, $att_value);
+							break;
+					}
+				}
 
-                $batch_params = '<GetBatchLocationCriteria xsi:type="urn:GetLocationCriteriaArray" soap-enc:arrayType="urn:GetLocationCriteria[]">';
-                foreach ($batch as $line) {
-                    $batch_params .= $line->xmlArrayLineStrings();
-                }
-                $batch_params .= '</GetBatchLocationCriteria>';
-                $batch_request = new SoapVar($batch_params, XSD_ANYXML);
+				$msd_data_val->approval_status = 1;
+				$msd_data_val->added_by = DownloadConnector::MSD_LOGGER_NAME;
+				$msd_data_val->updated_by = DownloadConnector::MSD_LOGGER_NAME;
+				$msd_data_val->synced_when = date('Y-m-d H:i:s');
+				$msd_data_val->service_call_days = implode(";", $service_call_days);
 
-                $soap_result = (array) $soap_client->saveBatchLocation($batch_request);
-                /** Log response message */
-                Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . LocationData::MODULE_NAME_LOCATION . "]-[" . $short_desc . "|" . json_encode($salesman_code) . "] " . $soap_result['message'], ""); /* Save log info message */
-                
-				print_r("[" . date("Y-m-d H:i:s") . "] " . $soap_result['message'] . "\n");
-				/** Log total rows */
-                if ($key === 0) {
-                    Utils::updateTriggerTotalRows($trigger_id, $soap_result['total_rows'], $batch_enabled); /* Update trigger total rows */
-                } else {
-                    Utils::updateTriggerTotalRows($trigger_id, $soap_result['total_rows'], true); /* Update trigger total rows = existing + response total_rows */
-                }
-                /** Log failed rows */
-                Utils::updateTriggerFailedRows($trigger_id, $soap_result['failed_rows'], true); /* Update trigger failed rows = existing + response failed_rows */
-                /** Log response error */
-                if (isset($soap_result['error']) && $soap_result['error'] > 0) {
-                    foreach ($soap_result['error'] as $k_e => $v_err_msg) {
-						print_r("[" . date("Y-m-d H:i:s") . "] " . $v_err_msg . "\n");
-                        Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::ERROR, DownloadConnector::MSD_LOGGER_NAME, "[" . LocationData::MODULE_NAME_LOCATION . "]-[" . $short_desc . "|" . json_encode($salesman_code) . "]" . Utils::logMsg($v_err_msg), ""); /* Save log error message */
-                    }
-                }
-            }
-        } else {
-            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::ERROR, DownloadConnector::MSD_LOGGER_NAME, "[" . LocationData::MODULE_NAME_LOCATION . "]-[" . $short_desc . "|" . json_encode($salesman_code) . "] No maintenance found.", ""); /* Save log info message */
-        }
-    }
+				$msd_data[] = $msd_data_val;
+
+				unset($service_call_days);
+			}
+
+			if (count($msd_data) > 0) {
+
+				$batch_data = array_chunk($msd_data, DownloadConnector::BATCH_LIMIT);
+
+				foreach ($batch_data as $batch) {
+
+					$batch_params = '<GetBatchLocationCriteria xsi:type="urn:GetLocationCriteriaArray" soap-enc:arrayType="urn:GetLocationCriteria[]">';
+
+					foreach ($batch as $line) {
+						$batch_params .= $line->xmlArrayLineStrings();
+					}
+
+					$batch_params .= '</GetBatchLocationCriteria>';
+
+					$batch_request = new SoapVar($batch_params, XSD_ANYXML);
+
+					$soap_result = (array)$soap_client->saveBatchLocation($batch_request);
+
+					Utils::updateTriggerTotalRows(
+						$trigger_id,
+						$soap_result['total_rows'],
+						true
+					);
+
+					Utils::updateTriggerFailedRows(
+						$trigger_id,
+						$soap_result['failed_rows'],
+						true
+					);
+
+					// FREE MEMORY AFTER EVERY SOAP CALL
+					unset(
+						$batch_params,
+						$batch_request,
+						$soap_result,
+						$batch,
+						$line
+					);
+
+					if (function_exists('gc_collect_cycles')) {
+						gc_collect_cycles();
+					}
+				}
+
+				unset($batch_data);
+
+				foreach ($msd_data as $k => $obj) {
+					unset($msd_data[$k]);
+				}
+
+				unset($msd_data);
+
+				if (function_exists('gc_collect_cycles')) {
+					gc_collect_cycles();
+				}
+			}
+
+			if (count($msd_init_data) < $pageSize) {
+				$hasMoreData = false;
+			}
+
+			// FREE PAGE MEMORY
+			unset(
+				$msd_init_data,
+				$msd_soap_result,
+				$value,
+				$att_key,
+				$att_value,
+				$msd_data_val
+			);
+
+			if (function_exists('gc_collect_cycles')) {
+				gc_collect_cycles();
+			}
+
+			print_r(sprintf(
+				"[%s] Memory: %.2f MB | Peak: %.2f MB\n",
+				date('Y-m-d H:i:s'),
+				memory_get_usage(true) / 1048576,
+				memory_get_peak_usage(true) / 1048576
+			));
+
+		} while ($hasMoreData);
+
+		unset($soap_client);
+
+		if (function_exists('gc_collect_cycles')) {
+			gc_collect_cycles();
+		}
+
+		Utils::updateTriggerStatus(
+			$trigger_id,
+			DownloadConnector::STATUS_DONE
+		);
+
+		print_r("[" . date("Y-m-d H:i:s") . "] Sync Finished.\n");
+	}
 
     /**
      * Turns data obtained from client RESTful API to XML data and sends it to NOC.
@@ -548,7 +811,7 @@ class DownloadConnector extends Model
      * 
      * @return void
      */
-    public static function syncMSDPromotionNew($method, $url, $data, $trigger_id = null)
+   /* public static function syncMSDPromotionNew($method, $url, $data, $trigger_id = null)
     {
         set_time_limit(0);
         ini_set('memory_limit', '-1');
@@ -568,7 +831,7 @@ class DownloadConnector extends Model
            
         $request_no = $sales_office_no . Date("YmdHis");
         $msd_soap_result = Globals::callSoapApiReadMultiple($url, $data, $sales_office_no);
-        /* Header */
+        // Header
 	
         if (isset($data['params']['No'])) {
 			$data['params']['Scheme_No'] = $data['params']['No'];
@@ -611,7 +874,7 @@ class DownloadConnector extends Model
         }
 		if(count($msd_promo_data) <= 0 ) {
 			print_r("No promo found");
-            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "] No promo data found.", ""); /* Save log error message */
+            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "] No promo data found.", ""); ## Save log error message
 			return;
 		}
 		unset($msd_soap_result);
@@ -634,7 +897,7 @@ class DownloadConnector extends Model
 		$data_l['params']['Scheme_Start_Date'] = "<". date('Y-m-d');
 		print_r("[" . date("Y-m-d H:i:s") . "] Downloading Discount Location List\n");
 		
-        /* Location */
+        ## Location 
 		$msd_promo_location_data = [];
         $route = Params::values()['webservice']['abi_msd']['route']['promotion-customer']['list'];
         $url = Globals::soapABIMSDynamicsURL($route, $company);
@@ -690,7 +953,7 @@ class DownloadConnector extends Model
         }
 		if(count($msd_promo_location_data) <= 0 ) {
 			print_r("No location found");
-            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "] No location data found.", ""); /* Save log error message */
+            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "] No location data found.", ""); # Save log error message
 			return;
 		}
 		unset($msd_soap_result);
@@ -702,12 +965,12 @@ class DownloadConnector extends Model
 		unset($data_d['params']['To_Date']);
 		unset($data_d['params']['From_Date']);
 		unset($data_d['params']['Published']);
-        /* Discount */
+        #Discount 
 		$msd_promo_discount_data = [];
         $route = Params::values()['webservice']['abi_msd']['route']['promotion-discount-line']['list'];
         $url = Globals::soapABIMSDynamicsURL($route, $company);
         $msd_soap_result = Globals::callSoapApiReadMultiple($url, $data_d, $sales_office_no);
-        Utils::updateTriggerStatus($trigger_id, DownloadConnector::STATUS_ONGOING); /* Update trigger status */
+        Utils::updateTriggerStatus($trigger_id, DownloadConnector::STATUS_ONGOING); /* Update trigger status
         if (isset($msd_soap_result->ReadMultiple_Result->PromotionSchemeDiscountSubform)) {
             if (count($msd_soap_result->ReadMultiple_Result->PromotionSchemeDiscountSubform) > 1) {
 				$total_promo_d = count($msd_soap_result->ReadMultiple_Result->PromotionSchemeDiscountSubform);
@@ -757,7 +1020,7 @@ class DownloadConnector extends Model
         }
 		if(count($msd_promo_discount_data) <= 0 ) {
 			print_r("No location found");
-            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "] No discount data found.", ""); /* Save log error message */
+            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "] No discount data found.", ""); /* Save log error message
 			return;
 		}
 		unset($msd_soap_result);
@@ -766,7 +1029,7 @@ class DownloadConnector extends Model
 
         $msd_data = $msd_pser_data = [];
         if (!empty($msd_promo_data)) {
-            /* Save generated response as file backup */
+            /* Save generated response as file backup 
             $file_name = DownloadConnector::PATH . ($trigger_id != null ? $trigger_id . "-" : "") . date("YmdHis-") . str_replace(" ", "-", DiscountCaseData::MODULE_DISCOUNT_CASE);
 
             foreach ($msd_promo_data as $pkey => $promo) {
@@ -780,7 +1043,7 @@ class DownloadConnector extends Model
                 $msd_so_data_val->company = $company;
             }
             $msd_so_data_val->deleted = 0;
-            /* Get all MSD valid sales office */
+            /* Get all MSD valid sales office
             $so_params = '<GetSalesOfficeCriteria xsi:type="urn:GetSalesOfficeCriteria">';
             $so_params .= $msd_so_data_val->xmlLineStrings();
             $so_params .= '</GetSalesOfficeCriteria>';
@@ -809,7 +1072,7 @@ class DownloadConnector extends Model
 							'product_no'         => $discount_batch['product_no'],
 							'document_no'        => $promo_batch['no'],
 							'discount_case_cd'   => $promo_batch['no'],
-							'description'        => addslashes($promo_batch['description']), // Escape single quotes
+							'description'        => addslashes($promo_batch['name']), // Escape single quotes
 							'amount'             => $discount_batch['discount_amount'],
 							'percentage'         => number_format($discount_batch['percentage'], 4),
 							'from_date'          => $promo_batch['start_date'],
@@ -980,6 +1243,499 @@ class DownloadConnector extends Model
 						}
 					}
 				}
+				  Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "] Saved discount for " . $key, ""); /* Save log error message 
+			
+				print_r("Promotion " . $key . " done. \n");
+				unset($final_data[$key]);
+				
+			}
+			// if (!isset($data['params']['SystemModifiedAt']) || empty($data['params']['SystemModifiedAt'])) {
+
+				// DB::table('discount_m_case')
+				// ->where('sales_office_no', $sales_office_no)
+				// ->whereNotIn('disc_type_no', $saved_promos)
+				// ->update(['deleted' => 1]);
+			// }
+
+            $soap_result = $soap_client->deletePromotionCache($request_no );
+            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "]" . $soap_result, ""); /* Save log error message
+
+        }
+		
+    }
+	*/
+	
+	public static function syncMSDPromotionNew($method, $url, $data, $trigger_id = null)
+    {
+        set_time_limit(0);
+        ini_set('memory_limit', '-1');
+        ini_set('display_errors', 'On');
+        $company = isset($data['company']) ? $data['company'] : "";
+        $sales_office_no = isset($data['sales_office_no']) ? $data['sales_office_no'] : "";
+		$customer_code = isset($data['params']['Customer_Code']) ? $data['params']['Customer_Code'] : "";
+		$sales_office_obj = SalesOffice::where('no', '=', $sales_office_no)->first();
+		$short_desc = $sales_office_obj->short_desc;
+		$soap_client = Globals::soapClientABINOCCentralWS();
+		
+		if (isset($data['params']['Customer_Code'])) {
+			unset($data['params']['Customer_Code']);
+		}
+		
+		print_r("[" . date("Y-m-d H:i:s") . "] Downloading Discount No List\n");
+           
+        $request_no = $sales_office_no . Date("YmdHis");
+        $msd_soap_result = Globals::callSoapApiReadMultiple($url, $data, $sales_office_no);
+        /* Header */
+	
+        if (isset($data['params']['No'])) {
+			$data['params']['Scheme_No'] = $data['params']['No'];
+            unset($data['params']['No']);
+        }
+
+        $msd_promo_data = [];
+		$promotion_list = [];
+        if (isset($msd_soap_result->ReadMultiple_Result->PromotionList)) {
+            if (count($msd_soap_result->ReadMultiple_Result->PromotionList) > 0) {
+				$total_promo = count($msd_soap_result->ReadMultiple_Result->PromotionList);
+				$promotion_value = count($msd_soap_result->ReadMultiple_Result->PromotionList) > 1 ? $msd_soap_result->ReadMultiple_Result->PromotionList : [$msd_soap_result->ReadMultiple_Result->PromotionList];
+				$promo_i = 0;
+                foreach ($promotion_value as $value) {
+					$promo_i++;
+					self::cliSyncProgress($request_no, 'Promotion list', $promo_i, $total_promo);
+					$no = $value->No;
+					$promotion_list[] = $no;
+					$msd_promo_data[] = [
+						'no' => $no,
+						'name' => isset($value->Name) ? $value->Name : '',
+						'description' => isset($value->Long_Description) ? $value->Long_Description : '',
+						'sales_office_no' => $sales_office_no,
+						'short_desc' => $short_desc,
+						'start_date' => isset($value->From_Date) ? $value->From_Date : '',
+						'end_date' => isset($value->To_Date) ? $value->To_Date : '',
+						'scheme_type' => isset($value->Scheme_Type) ? $value->Scheme_Type : '',
+						'scheme_activate' => isset($value->Scheme_Activate) ? $value->Scheme_Activate : '',
+						'exclusive_promo' => isset($value->Exclusive_Promo) ? $value->Exclusive_Promo : '',
+						'discount' => isset($value->Promotion_On_Discount) ? $value->Promotion_On_Discount : '',
+						'foc' => isset($value->Promotion_On_FOC) ? $value->Promotion_On_FOC : '',
+						'bundle_validation' => isset($value->Multiple_Bundle_Validation) ? $value->Multiple_Bundle_Validation : '',
+						'link_bundle' => isset($value->Link_to_Bundle) ? $value->Link_to_Bundle : '',
+						'foc_scheme' => isset($value->FOC_Scheme) ? $value->FOC_Scheme : '',
+						'discount_scheme' => isset($value->Discount_Scheme) ? $value->Discount_Scheme : '',
+						'request_no' => $request_no,
+					];
+                }
+				
+				$total_promo_s = count($msd_promo_data);
+				print_r("[" . date("Y-m-d H:i:s") . "] Saved " . $total_promo_s . " out of " . $total_promo .  "\n");
+            } 
+        }
+		if(count($msd_promo_data) <= 0 ) {
+			print_r("No promo found");
+            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "] No promo data found.", ""); /* Save log error message */
+			return;
+		}
+		unset($msd_soap_result);
+		
+		$data_l = $data;
+		
+
+        if (isset($data_l['params']['SystemModifiedAt'])) {
+            unset($data_l['params']['SystemModifiedAt']);
+        }
+		unset($data_l['params']['To_Date']);
+		unset($data_l['params']['From_Date']);
+		unset($data_l['params']['Published']);
+			
+		
+		if ($customer_code != "") {
+			$data_l['params']['Customer_Code'] = $customer_code;
+		}
+		
+		$promotion_list = array_values(array_unique($promotion_list));
+		$promotionSet = array_flip($promotion_list);
+		$data_l['params']['WIN_Sale_office_Code'] = $short_desc;
+		/* Inclusive "active on run date": strict >/< excluded rows starting or ending today. */
+		$today = date('Y-m-d');
+		$data_l['params']['Scheme_End_Date'] = '>=' . $today;
+		$data_l['params']['Scheme_Start_Date'] = '<=' . $today;
+		print_r("[" . date("Y-m-d H:i:s") . "] Downloading Discount Location List\n");
+		print_r("[" . date("Y-m-d H:i:s") . "] Scheme count: " . count($promotion_list) . "\n");
+        /* Location */
+		$msd_promo_location_data = [];
+        $route = Params::values()['webservice']['abi_msd']['route']['promotion-customer']['list'];
+        $url = Globals::soapABIMSDynamicsURL($route, $company); //dd($url);
+		$loc_objs = [];
+		$promotion_arr = [];
+		$schemeChunks = array_chunk($promotion_list, 35);
+		$totalSchemeChunks = count($schemeChunks);
+		foreach ($schemeChunks as $chunkIndex => $schemeChunk) {
+			$data_l['params']['Scheme_No'] = implode("|", $schemeChunk);
+			print_r("[" . date("Y-m-d H:i:s") . "] Fetching location chunk " . ($chunkIndex + 1) . "/" . $totalSchemeChunks . " (" . count($schemeChunk) . " schemes)\n");
+			$msd_soap_result = Globals::callSoapApiReadMultiple($url, $data_l, $sales_office_no);
+			if (!isset($msd_soap_result->ReadMultiple_Result->PromotionCustomerList)) {
+				continue;
+			}
+			$chunkRows = $msd_soap_result->ReadMultiple_Result->PromotionCustomerList;
+			if (count($chunkRows) == 1) {
+				$promotion_arr[] = $chunkRows;
+			} else {
+				foreach ($chunkRows as $row) {
+					$promotion_arr[] = $row;
+				}
+			}
+		}
+        if (count($promotion_arr) > 0) {
+				$total_promo_l = count($promotion_arr);
+				$loc_i = 0;
+                foreach ($promotion_arr as $value) {	
+					$loc_i++;
+					self::cliSyncProgress($request_no, 'Discount locations', $loc_i, $total_promo_l);
+				
+					if(!isset($promotionSet[$value->Scheme_No]))
+						continue;
+					if(!isset($value->Customer_Code))
+						continue;
+					if(isset($loc_objs[$value->Customer_Code])) {						
+						$loc_obj = $loc_objs[$value->Customer_Code];
+					}
+					else {
+
+						$loc_obj = Location::where('code', '=', $value->Customer_Code)
+							->where('sales_office_no', '=', $sales_office_no)
+							->where('deleted', '=', 0)
+							->whereNotNull('salesman_code')
+							->where('salesman_code', '!=', '')
+							->first();
+				    if($loc_obj == null) {
+						continue;
+					}
+					else
+						$loc_objs[$value->Customer_Code] = $loc_obj;
+					}
+					$promotion_loc = [];
+					$promotion_loc['promotion_no'] = $value->Scheme_No;
+					$promotion_loc['location_code'] = isset($value->Customer_Code) ? $value->Customer_Code : "";
+					$promotion_loc['location_id'] = $loc_obj->id;
+					$promotion_loc['start_date'] = isset($value->Scheme_Start_Date) ? $value->Scheme_Start_Date : "";
+					$promotion_loc['end_date'] =  isset($value->Scheme_End_Date) ? $value->Scheme_End_Date: "";
+					$promotion_loc["request_no"] = $request_no;
+					$msd_promo_location_data[] = $promotion_loc;
+					print_r('Saved ' . $promotion_loc['promotion_no'] . " " . $promotion_loc['location_code'] .  "\n");
+                }
+				$total_promo_l_s = count($msd_promo_location_data);
+					print_r('Saved ' . $total_promo_l_s . " out of " . $total_promo_l .  "\n");
+        }
+		if(count($msd_promo_location_data) <= 0 ) {
+			print_r("No location found");
+            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "] No location data found.", ""); /* Save log error message */
+			return;
+		}
+		unset($msd_soap_result);
+		unset($loc_objs);
+		print_r("[" . date("Y-m-d H:i:s") . "] Downloading Discount SKU List\n");
+
+		$data_d = $data;
+		
+		unset($data_d['params']['To_Date']);
+		unset($data_d['params']['From_Date']);
+		unset($data_d['params']['Published']);
+        /* Discount */
+		$msd_promo_discount_data = [];
+        $route = Params::values()['webservice']['abi_msd']['route']['promotion-discount-line']['list'];
+        $url = Globals::soapABIMSDynamicsURL($route, $company);
+        $msd_soap_result = Globals::callSoapApiReadMultiple($url, $data_d, $sales_office_no);
+        Utils::updateTriggerStatus($trigger_id, DownloadConnector::STATUS_ONGOING); /* Update trigger status */
+        if (isset($msd_soap_result->ReadMultiple_Result->PromotionSchemeDiscountSubform)) {
+            if (count($msd_soap_result->ReadMultiple_Result->PromotionSchemeDiscountSubform) > 1) {
+				$total_promo_d = count($msd_soap_result->ReadMultiple_Result->PromotionSchemeDiscountSubform);
+				$sku_objs = [];
+                foreach ($msd_soap_result->ReadMultiple_Result->PromotionSchemeDiscountSubform as $value) {
+					if(!in_array($value->Scheme_No, $promotion_list))
+						continue;
+					if(!isset($value->Scheme_Item)) {
+						print_r('There is no Scheme Item in '. $value->Scheme_No . "\n");
+						continue;
+					}
+					if(!isset($value->Scheme_Item_UOM)) {
+						print_r('There is no Scheme Item UOM in '. $value->Scheme_Item . "\n");
+						continue;
+					}
+					
+					
+					if(isset($sku_objs[($value->Scheme_Item . '-' . $value->Scheme_Item_UOM) ])) {						
+						$sku_obj = $sku_objs[($value->Scheme_Item . '-' . $value->Scheme_Item_UOM) ];
+					}
+					else {
+						$sku_obj = SKU::where('code', '=', ($value->Scheme_Item . '-' . $value->Scheme_Item_UOM))->where('sales_office_no', '=', $sales_office_no)->where('deleted', '=', 0)->first();
+						if($sku_obj == null) {
+							print_r('There is no SKU ' . ($value->Scheme_Item . '-' . $value->Scheme_Item_UOM) . ' for sales office '. $sales_office_no . "\n");
+							continue;
+						}
+						else
+							$sku_objs[($value->Scheme_Item . '-' . $value->Scheme_Item_UOM) ] = $sku_obj;
+					
+					}
+					$promotion_disc= [];
+					$promotion_disc['promotion_no'] = $value->Scheme_No;
+					$promotion_disc['product_no'] = isset($value->Scheme_Item) ? ($value->Scheme_Item . '-' . $value->Scheme_Item_UOM) : "";
+					$promotion_disc['uom'] =  isset($value->Scheme_Item_UOM) ? $value->Scheme_Item_UOM : "";
+					$promotion_disc['min'] =  isset($value->Scheme_Item_Quantity_Min) ? $value->Scheme_Item_Quantity_Min : "";
+					$promotion_disc['max'] =   isset($value->Scheme_Item_Quantity_Max) ? $value->Scheme_Item_Quantity_Max : "";
+					$promotion_disc["discount_type"] = isset($value->Discount_Type) ? (new DiscountCaseData)->getMSDDiscountType($value->Discount_Type) : "";
+					$promotion_disc['discount_amount'] =   isset($value->Discount_Amount) ? $value->Discount_Amount: "";
+					$promotion_disc['percentage'] = isset( $value->Discount_Percent) ? $value->Discount_Percent : "";
+					$promotion_disc["request_no"] = $request_no;
+					$msd_promo_discount_data[] = $promotion_disc;
+					print_r('Saved ' . $promotion_disc['promotion_no'] . " " . $promotion_disc['product_no'] .  "\n");
+				}
+				$total_promo_l_d = count($msd_promo_discount_data);
+					print_r('Saved ' . $total_promo_l_d . " out of " . $total_promo_d .  "\n");
+            } 
+        }
+		if(count($msd_promo_discount_data) <= 0 ) {
+			print_r("No location found");
+            Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "] No discount data found.", ""); /* Save log error message */
+			return;
+		}
+		unset($msd_soap_result);
+		unset($sku_objs);
+
+
+        $msd_data = $msd_pser_data = [];
+        if (!empty($msd_promo_data)) {
+            /* Save generated response as file backup */
+            $file_name = DownloadConnector::PATH . ($trigger_id != null ? $trigger_id . "-" : "") . date("YmdHis-") . str_replace(" ", "-", DiscountCaseData::MODULE_DISCOUNT_CASE);
+
+            foreach ($msd_promo_data as $pkey => $promo) {
+                Globals::saveJsonFile($file_name . "_" . $pkey, $promo);
+            }
+
+            $msd_so_data_val = new SalesOfficeData();
+            if ($sales_office_no != "") {
+                $msd_so_data_val->no = $sales_office_no;
+            } else {
+                $msd_so_data_val->company = $company;
+            }
+            $msd_so_data_val->deleted = 0;
+            /* Get all MSD valid sales office */
+            $so_params = '<GetSalesOfficeCriteria xsi:type="urn:GetSalesOfficeCriteria">';
+            $so_params .= $msd_so_data_val->xmlLineStrings();
+            $so_params .= '</GetSalesOfficeCriteria>';
+            $so_request = new SoapVar($so_params, XSD_ANYXML);
+            $so_soap_result = (array) $soap_client->retrieveSalesOfficeByCriteria($so_request);
+
+			$locationsByPromo = [];
+			foreach ($msd_promo_location_data as $location_batch) {
+				$pno = $location_batch['promotion_no'];
+				if (!isset($locationsByPromo[$pno])) {
+					$locationsByPromo[$pno] = [];
+				}
+				$locationsByPromo[$pno][] = $location_batch;
+			}
+			$discountsByPromo = [];
+			foreach ($msd_promo_discount_data as $discount_batch) {
+				$pno = $discount_batch['promotion_no'];
+				if (!isset($discountsByPromo[$pno])) {
+					$discountsByPromo[$pno] = [];
+				}
+				$discountsByPromo[$pno][] = $discount_batch;
+			}
+
+			$final_data = [];
+
+			$promoDataCount = count($msd_promo_data);
+			$promoIdx = 0;
+			foreach ($msd_promo_data as $key => $promo_batch) {
+				$promoIdx++;
+				self::cliSyncProgress($request_no, 'Build discount matrix', $promoIdx, $promoDataCount);
+				$final_data[$promo_batch['no']] = [];
+				$locationsForPromo = isset($locationsByPromo[$promo_batch['no']]) ? $locationsByPromo[$promo_batch['no']] : [];
+				$discountsForPromo = isset($discountsByPromo[$promo_batch['no']]) ? $discountsByPromo[$promo_batch['no']] : [];
+				foreach ($locationsForPromo as $location_batch) {
+					foreach ($discountsForPromo as $discount_batch) {
+						$discount_m_case_no = $location_batch['location_code'] . $promo_batch['no'] . $discount_batch['product_no']. $discount_batch['discount_type'];
+						
+						if(isset($final_data[$promo_batch['no']][$discount_m_case_no]))
+							continue;
+						$new_data = [
+							'discount_m_case_no' => $discount_m_case_no,
+							'disc_type_no'       => $promo_batch['no'],
+							'sales_office_no'    => $sales_office_no,
+							'location_id'        => $location_batch['location_id'],
+							'product_no'         => $discount_batch['product_no'],
+							'document_no'        => $promo_batch['no'],
+							'discount_case_cd'   => $promo_batch['no'],
+							'description'        => addslashes($promo_batch['name']), // Escape single quotes
+							'amount'             => $discount_batch['discount_amount'],
+							'percentage'         => number_format($discount_batch['percentage'], 4),
+							'from_date'          => $promo_batch['start_date'],
+							'to_date'            => $promo_batch['end_date'],
+							'deleted'            => 0,
+							'pser_cd'            => $promo_batch['no'],
+							'added_by'           => DownloadConnector::MSD_LOGGER_NAME,
+							'msd_synced'         => 1
+						];
+					$final_data[$promo_batch['no']][$discount_m_case_no ] = $new_data;
+					}
+					print_r("Finished creating ". $promo_batch['no'] ." data of ". $location_batch['location_code'] . "\n");
+				}
+			}
+			
+			unset($msd_promo_data);
+			unset($msd_promo_location_data);
+			unset($msd_promo_discount_data);
+			unset($locationsByPromo);
+			unset($discountsByPromo);
+			$saved_promos = [];
+
+			$totalFinalPromos = count($final_data);
+			$finalPromoIdx = 0;
+            foreach($final_data as $key => $promo) {
+				$finalPromoIdx++;
+				self::cliSyncProgress($request_no, 'DB save promotions', $finalPromoIdx, $totalFinalPromos);
+            //            $soap_result = $soap_client->createDiscountCaseFromCache($request_no, $promo->no, $limit, $limit_new, DownloadConnector::MSD_LOGGER_NAME ); 
+				
+				if(count($promo) <= 0) {
+					print_r("Promotion " . $key . " has no items. \n");
+					continue;
+				}
+				$saved_promos[] = $key;
+				print_r("Promotion " . $key . " start process. \n");
+
+				/* Process in bounded chunks — huge schemes OOM'd when loading all IDs + all existing rows + all inserts in memory. */
+				$promoRows = array_values($promo);
+				if (isset($final_data[$key])) {
+					$final_data[$key] = [];
+				}
+				$totalPromoRows = count($promoRows);
+				$promoChunkSize = 800;
+				$idInQuerySize = 350;
+				print_r("Promotion " . $key . " syncing " . $totalPromoRows . " rows in chunks of " . $promoChunkSize . "\n");
+
+				$insertCols = ['discount_m_case_no', 'disc_type_no', 'sales_office_no', 'location_id', 'product_no', 'document_no', 'discount_case_cd', 'description', 'amount', 'percentage', 'from_date', 'to_date', 'deleted', 'pser_cd', 'added_by', 'msd_synced'];
+				$pdo = DB::connection()->getPdo();
+				$chunkIndex = 0;
+				foreach (array_chunk($promoRows, $promoChunkSize) as $itemChunk) {
+					$chunkIndex++;
+					$existingRows = [];
+					$idsForChunk = [];
+					foreach ($itemChunk as $rowIn) {
+						if (!empty($rowIn['discount_m_case_no'])) {
+							$idsForChunk[$rowIn['discount_m_case_no']] = true;
+						}
+					}
+					$idList = array_keys($idsForChunk);
+					unset($idsForChunk);
+					foreach (array_chunk($idList, $idInQuerySize) as $idChunk) {
+						$rows = DB::table('discount_m_case')
+							->select('discount_m_case_no', 'description', 'from_date', 'to_date', 'amount', 'product_no', 'percentage', 'location_id', 'deleted')
+							->where('sales_office_no', $sales_office_no)
+							->where('disc_type_no', $key)
+							->whereIn('discount_m_case_no', $idChunk)
+							->get();
+						foreach ($rows as $row) {
+							$existingRows[$row->discount_m_case_no] = $row;
+						}
+						unset($rows);
+					}
+					unset($idList);
+
+					$item_create = [];
+					$item_update = [];
+					foreach ($itemChunk as $item) {
+						if (isset($existingRows[$item['discount_m_case_no']])) {
+							$temp_p_val = $existingRows[$item['discount_m_case_no']];
+							if ($item['from_date'] != $temp_p_val->from_date ||
+								$item['to_date'] != $temp_p_val->to_date ||
+								$item['amount'] != $temp_p_val->amount ||
+								$item['location_id'] != $temp_p_val->location_id ||
+								$item['product_no'] != $temp_p_val->product_no ||
+								$item['percentage'] != $temp_p_val->percentage ||
+								$item['description'] != $temp_p_val->description ||
+								$temp_p_val->deleted == 1) {
+								$item_update[] = $item;
+							}
+						} else {
+							$item_create[] = $item;
+						}
+					}
+					unset($existingRows);
+
+					if (count($item_create) > 0) {
+						$insertCount = 0;
+						$total_count = count($item_create);
+						foreach (array_chunk($item_create, 400) as $data_insert) {
+							$placeholders = [];
+							$bindings = [];
+							foreach ($data_insert as $discount_data) {
+								$placeholders[] = '(' . implode(',', array_fill(0, count($insertCols), '?')) . ')';
+								foreach ($insertCols as $col) {
+									$bindings[] = isset($discount_data[$col]) ? $discount_data[$col] : null;
+								}
+							}
+							$sql = 'INSERT IGNORE INTO discount_m_case (' . implode(',', $insertCols) . ') VALUES ' . implode(',', $placeholders);
+							try {
+								DB::insert($sql, $bindings);
+								$insertCount += count($data_insert);
+								print_r("[" . $key . "] chunk " . $chunkIndex . " created " . $insertCount . "/" . $total_count . "\n");
+							} catch (\Illuminate\Database\QueryException $e) {
+								continue;
+							}
+						}
+					}
+					unset($item_create);
+
+					if (count($item_update) > 0) {
+						foreach (array_chunk($item_update, 80) as $data_update) {
+							DB::beginTransaction();
+							try {
+								$col_update = [
+									'location_id' => ' location_id = CASE',
+									'description' => ' description = CASE',
+									'amount' => ' amount = CASE',
+									'percentage' => ' percentage = CASE',
+									'from_date' => ' from_date = CASE',
+									'to_date' => ' to_date = CASE',
+									'deleted' => ' deleted = CASE',
+									'updated_by' => ' updated_by = CASE',
+								];
+								foreach ($data_update as $discount_data) {
+									$when_cond = ' WHEN discount_m_case_no = ' . $pdo->quote($discount_data['discount_m_case_no']) . ' ';
+									$col_update['location_id'] .= $when_cond . ' AND location_id <> ' . $pdo->quote($discount_data['location_id']) . ' THEN ' . $pdo->quote($discount_data['location_id']) . ' ';
+									$col_update['description'] .= $when_cond . ' AND description <> ' . $pdo->quote($discount_data['description']) . ' THEN ' . $pdo->quote($discount_data['description']) . '  ';
+									$col_update['amount'] .= $when_cond . ' THEN ' . $pdo->quote($discount_data['amount']) . '  ';
+									$col_update['percentage'] .= $when_cond . ' THEN ' . $pdo->quote($discount_data['percentage']) . '  ';
+									$col_update['from_date'] .= $when_cond . ' THEN ' . $pdo->quote($discount_data['from_date']) . '  ';
+									$col_update['to_date'] .= $when_cond . ' THEN ' . $pdo->quote($discount_data['to_date']) . '  ';
+									$col_update['deleted'] .= $when_cond . ' THEN ' . $pdo->quote($discount_data['deleted']) . '  ';
+									$col_update['updated_by'] .= $when_cond . ' THEN ' . $pdo->quote(DownloadConnector::MSD_LOGGER_NAME) . '  ';
+								}
+								$update_query = 'UPDATE discount_m_case SET ';
+								foreach ($col_update as $key_a => $column) {
+									$update_query .= $column . ' ELSE ' . $key_a . ' END ,';
+								}
+								$update_query = rtrim($update_query, ',');
+								$idsInBatch = [];
+								foreach ($data_update as $d) {
+									$idsInBatch[] = $d['discount_m_case_no'];
+								}
+								$inClause = implode(',', array_map(function ($id) use ($pdo) {
+									return $pdo->quote($id);
+								}, $idsInBatch));
+								$update_query .= ' WHERE disc_type_no = ' . $pdo->quote($key) . ' AND sales_office_no = ' . $pdo->quote($sales_office_no) . ' AND discount_m_case_no IN (' . $inClause . ')';
+								DB::update($update_query);
+								DB::commit();
+								print_r("[" . $key . "] chunk " . $chunkIndex . " updated " . count($data_update) . " rows\n");
+							} catch (\Exception $e) {
+								DB::rollback();
+							}
+						}
+					}
+					unset($item_update, $itemChunk);
+				}
+				unset($promoRows);
+				  Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "] Saved discount for " . $key, ""); /* Save log error message */
+			
 				print_r("Promotion " . $key . " done. \n");
 				unset($final_data[$key]);
 				
@@ -998,6 +1754,29 @@ class DownloadConnector extends Model
         }
 		
     }
+	
+	protected static function cliSyncProgress($runId, $phase, $current, $total, $barWidth = 28)
+    {
+        if (PHP_SAPI !== 'cli' || $total < 1) {
+            return;
+        }
+        $pct = (int) floor(($current * 100) / $total);
+        $pct = min(100, max(0, $pct));
+        static $reported = [];
+        $bucketKey = $runId . '|' . $phase;
+        $bucket = (int) floor($pct / 5) * 5;
+        if (!isset($reported[$bucketKey])) {
+            $reported[$bucketKey] = -1;
+        }
+        if ($current === 1 || $current >= $total || $bucket > $reported[$bucketKey]) {
+            $reported[$bucketKey] = $bucket;
+            $filled = (int) round($barWidth * $current / $total);
+            $filled = min($barWidth, max(0, $filled));
+            $bar = str_repeat('#', $filled) . str_repeat('-', $barWidth - $filled);
+            fwrite(STDOUT, sprintf("[%s] %s |%s| %d%% (%d/%d)\n", date('Y-m-d H:i:s'), $phase, $bar, $pct, $current, $total));
+            fflush(STDOUT);
+        }
+    }
 
     /**
      * Turns data obtained from client RESTful API to XML data and sends it to NOC.
@@ -1012,6 +1791,7 @@ class DownloadConnector extends Model
      */
     public static function syncMSDPromotionDeals($method, $url, $data, $trigger_id = null)
     {
+		gc_enable();
         set_time_limit(0);
         ini_set('memory_limit', '-1');
         ini_set('display_errors', 'On');
@@ -1069,10 +1849,11 @@ class DownloadConnector extends Model
             }
         }
 		print_r("End Search PromotionList Data \n");
-		
+		gc_collect_cycles();
 		print_r("Start Search FOC Data \n");
 
         /* FOC Data */
+		gc_enable();
         $route = Params::values()['webservice']['abi_msd']['route']['promotion-foc']['list'];
         $url = Globals::soapABIMSDynamicsURL($route, $company);
         $msd_soap_result = Globals::callSoapApiReadMultiple($url, $data, $sales_office_no);
@@ -1103,8 +1884,9 @@ class DownloadConnector extends Model
             }
         }
 		print_r("End Search FOC Data \n");
-
+		gc_collect_cycles();
         
+		gc_enable();
 		print_r("Start Location Data \n");
         /* Location */
         $route = Params::values()['webservice']['abi_msd']['route']['promotion-customer']['list'];
@@ -1148,11 +1930,12 @@ class DownloadConnector extends Model
             }
         }
 		print_r("End Search Location Data \n");
-
+		gc_collect_cycles();
         
 		print_r("Start Discount Data \n");
 
         /* Discount */
+		gc_enable();
         $route = Params::values()['webservice']['abi_msd']['route']['promotion-discount-line']['list'];
         $url = Globals::soapABIMSDynamicsURL($route, $company);
         $msd_soap_result = Globals::callSoapApiReadMultiple($url, $data, $sales_office_no);
@@ -1198,9 +1981,9 @@ class DownloadConnector extends Model
             }
         }
 		print_r("End Discount Location Data \n");
-
+		gc_collect_cycles();
         Utils::updateTriggerStatus($trigger_id, DownloadConnector::STATUS_ONGOING); /* Update trigger status */
-
+		gc_enable();
         if (!empty($msd_promo_data)) {
 
             /* Save generated response as file backup */
@@ -1409,7 +2192,7 @@ class DownloadConnector extends Model
 			if(is_array($soap_result))
 				$soap_result = json_encode($soap_result);
             Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DiscountCaseData::MODULE_NAME_DISCOUNT_CASE .  "]" . $soap_result, ""); /* Save log error message */
-
+			gc_collect_cycles();
         }
     }
     
@@ -1997,6 +2780,9 @@ class DownloadConnector extends Model
 			if(!is_array($msd_init_data))
 				$msd_init_data = [$msd_init_data];
             foreach ($msd_init_data as $value) {
+				if(!isset($value->Unit_of_Measure_Code )) {
+					continue;
+				}
                  if(!in_array($value->Unit_of_Measure_Code , ["CSEF", "SHLE", "BTLF", "BTLE"]) ) {
                     continue;
                 }
@@ -3079,6 +3865,13 @@ class DownloadConnector extends Model
 							'UnitofMeasureCode' => $base_uom
 						),
 						];
+						// IF Zamboanga Sales office
+						if($sales_office_no == "780900") {
+							$data_sp['params']['SalesCode'] = 'ZAMBOANGA';
+						}
+						else {
+							$data_sp['params']['SalesCode'] = 'NATIONAL';
+						}
 						$sp_result = Globals::callSoapApiReadMultiple($url_sps, $data_sp, $sales_office_no);
 						if(isset($sp_result->ReadMultiple_Result->SalesPriceService->UnitPrice)) {
 							$unit_price = $sp_result->ReadMultiple_Result->SalesPriceService->UnitPrice;
@@ -3376,7 +4169,7 @@ class DownloadConnector extends Model
         $soap_client = Globals::soapClientABINOCCentralWS();
         $msd_soap_result = Globals::callSoapApiReadMultiple($url, $data);
         $msd_data = array();
-
+		
         if (isset($msd_soap_result->ReadMultiple_Result->Locations)) {
             if (count($msd_soap_result->ReadMultiple_Result->Locations) > 1) {
                 foreach ($msd_soap_result->ReadMultiple_Result->Locations as $value) {
@@ -4397,7 +5190,7 @@ class DownloadConnector extends Model
     * 
     * @return void
     */
-   public static function syncMSDCustomerBalance($method, $url, $data, $trigger_id = null)
+   public static function syncMSDCustomerBalance($method, $url, $data, $trigger_id = null, $company = null)
    {
 		$sales_office_no = isset($data['sales_office_no']) ? $data['sales_office_no'] : "";
 		$date_from = (isset($data['date_from']) ? $data['date_from'] : date('Y-m-d', strtotime('-7 days'))) . " 00:00:00";
@@ -4407,7 +5200,7 @@ class DownloadConnector extends Model
 		$sales_office_obj = SalesOffice::where('no', '=', $sales_office_no)->first();
 		if($sales_office_obj) {
 			$short_desc = $sales_office_obj->short_desc;
-			$data['params']['Global_Dimension_1_Code'] = $short_desc;	
+			$data['params']['Global_Dimension_1_Code'] = $short_desc;
 		}
 	   
        $msd_soap_result = Globals::callSoapApiReadMultiple($url, $data, $sales_office_no);
@@ -4420,6 +5213,7 @@ class DownloadConnector extends Model
 			->update([
 				'bl.deleted' => 1,
 		]);
+		file_put_contents(storage_path("qamote.log"), "DUMAAN DITO".PHP_EOL, FILE_APPEND);
        if (isset($msd_soap_result->ReadMultiple_Result->CustomerLedgerEntriesService)) {
            if (count($msd_soap_result->ReadMultiple_Result->CustomerLedgerEntriesService) > 1) {
                foreach ($msd_soap_result->ReadMultiple_Result->CustomerLedgerEntriesService as $value) {
@@ -4518,6 +5312,7 @@ class DownloadConnector extends Model
 
    public static function syncMSDCustomerBalanceEmpties($method, $url, $data, $trigger_id = null)
    {
+		gc_enable();
 		$sales_office_no = isset($data['sales_office_no']) ? $data['sales_office_no'] : "";        
 		$date_from = (isset($data['date_from']) ? $data['date_from'] : date('Y-m-d', strtotime('-7 days'))) . " 00:00:00";
 		$date_to = (isset($data['date_to']) ? $data['date_to'] : date("Y-m-d")) . " 23:59:59";    
@@ -4632,6 +5427,7 @@ class DownloadConnector extends Model
 
 			}
 		}
+		gc_collect_cycles();
    }
 
 
@@ -4675,8 +5471,6 @@ class DownloadConnector extends Model
 							if($inv_detail_obj) {
 								$inv_detail_obj->quantity = $inv_detail_data['quantity'];
 								$inv_detail_obj->amount = $inv_detail_data['amount'];
-								$inv_detail_obj->updated_by = DownloadConnector::MSD_LOGGER_NAME;
-								$inv_detail_obj->updated_when = date('Y-m-d H:i:s');
 								if($inv_detail_obj->save()){
 									Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::ERROR, DownloadConnector::MSD_LOGGER_NAME, "[Save Approved Refund] Updated Refund Data of " . $invoice_code . ": " . $inv_detail_data['product_code'] . " " . $inv_detail_data['line_no'], ""); /* Save log info message */
 								}

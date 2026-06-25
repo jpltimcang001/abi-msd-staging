@@ -33,8 +33,8 @@ class LocationData
         'Payment_Terms_Code' => 'payment_terms_code',
         "Payment_Method_Code" => 'payment_method_code',
         "Customer_Disc_Group" => 'customer_disc_group',
-        'Balance_LCY' => 'balance_fulls',
-        'Balance_Empties_Amount' => 'balance_mts',
+        //'Balance_LCY' => 'balance_fulls',
+        //'Balance_Empties_Amount' => 'balance_mts',
         'Comments' => 'comments',
         'VAT_Registration_No' => 'vat_registration_no',
         'E_Mail' => 'email_address',
@@ -46,11 +46,49 @@ class LocationData
 		'Longitude' => 'longitude',
 		// 'Post_Code' => 'zip_code',
 		'Fax_No' => 'fax_no',
-		'ContactName' => 'cp_name_1',
+		'WIN_Contact_Person_Name' => 'cp_name_1',
 		'Temporary_Location' => 'temporary_location',
 		'WIN_Owner_x0027_s_Full_Name'  => 'owner_name',
 		'WIN_Owner_x0027_s_Mobile_Number'  => 'owner_contact',
 		'Date_Open'  => 'date_open',
+    );
+	
+	const dict2 = array(
+        'Key' => 'ms_dynamics_key',
+        'Global_Dimension_1_Code' => 'short_description',
+        'No' => 'code',
+        'Name' => 'name',
+        'WIN_Trade_Name' => 'trade_name',
+        'Search_name' => 'search_name',
+        'Salesperson_Code' => 'salesman_code',
+        'Address' => 'address1',
+        'City' => 'address2',
+        'Customer_Price_Group' => 'customer_price_group',
+        'Credit_Limit_LCY' =>  'limit_fulls',
+        'WIN_Credit_Limit_Containers' =>  'limit_mts',
+        'Route' => 'sub_salesman_code',
+        'Route_Sequence_No' => 'route_seq_code',
+        'Payment_Terms_Code' => 'payment_terms_code',
+        "Payment_Method_Code" => 'payment_method_code',
+        "Customer_Disc_Group" => 'customer_disc_group',
+        //'Balance_LCY' => 'balance_fulls',
+        //'Balance_Empties_Amount' => 'balance_mts',
+        'Comments' => 'comments',
+        'VAT_Registration_No' => 'vat_registration_no',
+        'E_Mail' => 'email_address',
+        'VAT_Bus_Posting_Group' => 'vat_bus_posting_group',
+        'WIN_Trade_Channel_Code' => 'distribution_channel',
+        'WIN_Sub_Trade_Channel_Code' => 'store_type',
+        'Old_Outlet_Code' => 'code2',
+        'Latitude' => 'latitude',
+		'Longitude' => 'longitude',
+		// 'Post_Code' => 'zip_code',
+		'Fax_No' => 'fax_no',
+		'WIN_Contact_Person_Name' => 'cp_name_1',
+		'Temporary_Location' => 'temporary_location',
+		'WIN_Owner_x0027_s_Full_Name'  => 'owner_name',
+		'WIN_Owner_x0027_s_Mobile_Number'  => 'owner_contact',
+		//'Date_Open'  => 'date_open',
     );
 
     /**
@@ -278,6 +316,27 @@ class LocationData
     {
         $xml_string = '<ns1:Create><ns1:CustomerModifyRequestCard>';
         foreach (LocationData::dict as $key => $value) {
+			if( $this->$value === "" || $this->$value === null)
+				continue;
+			if($key === "No") 
+				$akey = "Customer_No";
+			else
+				$akey = $key;
+
+            $xml_string .= "<ns1:" . $akey . ">" . (($this->$value === "" || $this->$value !== NULL) ? htmlspecialchars($this->$value, ENT_XML1 | ENT_COMPAT, 'UTF-8') : "") . "</ns1:" . $akey . ">\n";
+        }
+        $xml_string .= '</ns1:CustomerModifyRequestCard></ns1:Create>';
+        return  $xml_string;
+    }
+	
+	 /**
+     * Create XML array.
+     * 
+     */
+    public function xmlArrayUpdateLocation2()
+    {
+        $xml_string = '<ns1:Create><ns1:CustomerModifyRequestCard>';
+        foreach (LocationData::dict2 as $key => $value) {
 			if( $this->$value === "" || $this->$value === null)
 				continue;
 			if($key === "No") 

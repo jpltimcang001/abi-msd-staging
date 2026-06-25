@@ -347,7 +347,7 @@ class APICommandHandler extends Command
         $added_by = isset($data['added_by']) ? $data['added_by'] : "";
         $url = Globals::soapABIMSDynamicsURL($route, $company);
         $from_batch = ($trigger != null);
-
+		
         try {
             $trigger = ($trigger != null) ? $trigger : Utils::saveTrigger($sales_office_no, LocationData::MODULE_LOCATION, DownloadConnector::STATUS_PENDING, $added_by);
             $trigger_id = isset($trigger['id']) ? $trigger['id'] : 0;
@@ -361,6 +361,7 @@ class APICommandHandler extends Command
             }
             return;
         } catch (\Exception $exc) {
+			file_put_contents(storage_path("qamote.log"), "NAG ERROR DITO - ".$exc->getMessage().PHP_EOL, FILE_APPEND);
             throw $exc;
         }
     }
@@ -1274,7 +1275,7 @@ al     *
             $trigger_id = isset($trigger['id']) ? $trigger['id'] : 0;
 
             if (!$from_batch) Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "Started retrieve " . strtolower(BalanceData::MODULE_NAME_BALANCE) . " maintenance.", ""); /* Save log message */
-            DownloadConnector::syncMSDCustomerBalance($method, $url, $data, $trigger_id); /* Call MSD REST API then process the response */
+            DownloadConnector::syncMSDCustomerBalance($method, $url, $data, $trigger_id, $company); /* Call MSD REST API then process the response */
             if (!$from_batch) {
                 Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "Done retrieved " . strtolower(BalanceData::MODULE_NAME_BALANCE) . " maintenance.", ""); /* Save log message */
                 Utils::updateTriggerStatus($trigger_id, DownloadConnector::STATUS_DONE); /* Update trigger status */
@@ -2284,6 +2285,9 @@ al     *
             'batch_enabled' => true,
             'params' => [
                 'No' =>  isset($data['params']['Scheme_Code']) ? $data['params']['Scheme_Code'] : "",
+				'Customer_Code' => isset($data['params']['No']) ? $data['params']['No'] : "",
+				//'SystemModifiedAt' => ">". date("Y-m-d", strtotime("-14 days"))
+
 				//'From_Date' => "<". ( isset($data['params']['date_from']) ? $data['params']['date_from'] : date("Y-m-d", strtotime("-3 days"))),
 				//'SystemModifiedAt' => ">". date("Y-m-d", strtotime("-3 days"))
             ]
@@ -2321,19 +2325,20 @@ al     *
             Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DownloadConnector::MODULE_NAME_INVENTORY_MULTIPLE . "] Started " . strtolower(SalesmanData::MODULE_NAME_SALESMAN)  . " maintenance.", ""); /* Save log message */
             $this->runSalesman($data_sm, $trigger);
             Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DownloadConnector::MODULE_NAME_INVENTORY_MULTIPLE . "] Finished " . strtolower(SalesmanData::MODULE_NAME_SALESMAN)  . " maintenance.", ""); /* Save log message */
-
+			
             Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), DownloadConnector::INFO, DownloadConnector::MSD_LOGGER_NAME, "[" . DownloadConnector::MODULE_NAME_LOCATION_MULTIPLE . "] Started " . strtolower(LocationData::MODULE_NAME_LOCATION) . " maintenance.", ""); /* Save log message */
-            if (is_array($salesman_params) && count($salesman_params) > 0) {
+			if (is_array($salesman_params) && count($salesman_params) > 0) {
                 foreach ($salesman_params as $sm) {
                     $new_param = $params_l;
                     $new_param['params']['Salesperson_Code'] = $sm['code'];
                     print_r("[" . date("Y-m-d H:i:s") . "] Syncing " . strtoupper($sm['code']) . " " . strtolower(LocationData::MODULE_NAME_LOCATION) . "\n");
                     $this->runCustomer($new_param, $trigger);
                 }
-            } elseif ($salesman_params != "" && !is_array($salesman_params)) {
+            } else if ($salesman_params != "" && !is_array($salesman_params)) {
+				file_put_contents(storage_path($data['sales_office_no'].".log"), date("[Y-m-d H:i:s] INFO - PUMASOK DITO "). $salesman_params.PHP_EOL, FILE_APPEND);
                 $params_l['params']['Salesperson_Code'] = $salesman_params;
                 print_r("[" . date("Y-m-d H:i:s") . "] Syncing " . strtolower(LocationData::MODULE_NAME_LOCATION) . "\n");
-                $this->runCustomer($params_l, $trigger);
+					$this->runCustomer($params_l, $trigger);
             }
 			else {
                 print_r("[" . date("Y-m-d H:i:s") . "] Syncing " . strtolower(LocationData::MODULE_NAME_LOCATION) . "\n");
@@ -2452,7 +2457,7 @@ al     *
         $added_by = isset($data['added_by']) ? $data['added_by'] : "";
         $data_header =  [
             'company' => $data['company'],
-			'is_auto' => $data['is_auto'],
+			'is_auto' => isset($data['is_auto']) ? $data['is_auto']: 0,
             'sales_office_no' => isset($data['sales_office_no']) ? $data['sales_office_no'] : "",
             'added_by' => isset($data['added_by']) ? $data['added_by'] : "",
             'batch_enabled' => true,
@@ -2465,7 +2470,7 @@ al     *
         ];
         $data_line =  [
              'company' => $data['company'],
-			'is_auto' => $data['is_auto'],
+			'is_auto' => isset($data['is_auto']) ? $data['is_auto'] : 0,
             'sales_office_no' => isset($data['sales_office_no']) ? $data['sales_office_no'] : "",
             'added_by' => isset($data['added_by']) ? $data['added_by'] : "",
             'batch_enabled' => true,

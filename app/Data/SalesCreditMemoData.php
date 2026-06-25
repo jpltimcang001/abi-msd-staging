@@ -29,6 +29,7 @@ class SalesCreditMemoData
     );
 
     public $ct_slip;
+	public $ct_slip_no;
     public $location_code;
     public $empties_type;
     public $reason_code;
@@ -120,6 +121,8 @@ class SalesCreditMemoData
             $xml_string .= "</ns1:SalesCrMemoLines>";
         }
         $xml_string .= '</ns1:SalesCreditMemoService>';
+		
+		file_put_contents(storage_path('payload.xml'), $xml_string);
         return  $xml_string;
     }
 }

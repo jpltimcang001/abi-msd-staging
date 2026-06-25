@@ -83,7 +83,11 @@ class LocationDetail extends Model
      * @var string
      */
     protected $connection = 'mysql';
-
+	
+	
+	protected $casts = [
+		'balance_fulls'=> 'integer'
+	];
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

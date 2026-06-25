@@ -4319,7 +4319,7 @@ class UploadConnector extends Model
 
 		// Initialize variables
 		$sales_office_no = null;
-
+		Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), UploadConnector::INFO, UploadConnector::MSD_LOGGER_NAME, "[" . SalesCreditMemoData::MODULE_NAME_SALES_CREDIT_MEMO . "] Received data: ". json_encode($json), "");
 		// Validate sales office
 		$sales_office_model = SalesOffice::where('short_desc', '=', isset($json['sales_office_no']) ? $json['sales_office_no'] : '')->first();
 		if ($sales_office_model) {
@@ -4362,10 +4362,13 @@ class UploadConnector extends Model
 		
 		$sales_order_returnables = isset($json['Order_return_obj']) ? $json['Order_return_obj'] : array();
 		if (is_array($sales_order_returnables) && count($sales_order_returnables) > 0) {
+			
 			foreach ($sales_order_returnables as $returnable) {
 				$data_detail = new SalesCreditMemoLineData;
 				$data_detail->type = 'Item';
-				$data_detail->quantity = abs($returnable['qty']);
+				// $data_detail->quantity = abs($returnable['qty']);
+				$data_detail->ct_slip_no = $returnable['reference_no'];
+				$data_detail->quantity = abs($returnable['returns']);
 				$data_detail->unit_price = $returnable['unit_price'];
 				$data_detail->no = $returnable['sku_code'];
 				$data_detail->empties_type = 'Deposit';
@@ -4385,13 +4388,15 @@ class UploadConnector extends Model
 				if($data->applies_to_doc_no == null or $data->applies_to_doc_no == "") {
 					continue;
 				}
-
+				
+				file_put_contents(storage_path('jp.log'), "Dumaan dito: quantity".$data_detail->quantity.PHP_EOL, FILE_APPEND);
 				if ($data_detail->quantity > 0) {
 					$data->salesCreditMemoLineData[] = $data_detail;
 				}
 			}
 
 			$batch_params = "<ns1:Create>" . $data->xmlArrayLineStrings() . "</ns1:Create>";
+			Utils::saveLog($trigger_id, $sales_office_no, date("Y-m-d H:i:s"), UploadConnector::INFO, UploadConnector::MSD_LOGGER_NAME, "[" . SalesCreditMemoData::MODULE_NAME_SALES_CREDIT_MEMO . "] SOAP Client Payyload: " . $batch_params, "");
 			$batch_request = new SoapVar($batch_params, XSD_ANYXML);
 			$soap_result = Globals::callSoapApiCreate($url, $batch_request, $sales_office_no);
 
@@ -5032,7 +5037,7 @@ class UploadConnector extends Model
         $location_code = isset($data['location_code']) ? $data['location_code'] : "";
         $date_from = (isset($data['date_from']) ? $data['date_from'] : date("Y-m-d")) . " 00:00:00";
         $date_to = (isset($data['date_to']) ? $data['date_to'] : date("Y-m-d")) . " 23:59:59";
-
+		file_put_contents("data.log", $date_from . " - ". $date_to.PHP_EOL, FILE_APPEND);
         $salesman = Salesman::select('code')->where('msd_synced', '=', 1)->where('sales_office_no', '=', $sales_office_no)->get();
         $build = Location::where('sales_office_no', '=', $sales_office_no)
             ->whereIn('salesman_code', $salesman)
@@ -5243,11 +5248,10 @@ class UploadConnector extends Model
         $date_to = (isset($data['date_to']) ? $data['date_to'] : date("Y-m-d")) . " 23:59:59";
         $location_code = isset($data['location']) ? $data['location'] : "";
 		$module_name = "Location Detail Update";
-			
 		
-        $loc_query = Location::where('sales_office_no', '=', $sales_office_no)->
-		where('code', '=', $location_code)->where('deleted', '=', 0);
+        $loc_query = Location::where('sales_office_no', $sales_office_no)->where('code', $location_code)->where('deleted', 0);
         $loc_obj = $loc_query->first();
+
 		if($loc_obj){
 
 			$loc_detail = $loc_obj->locationDetail()->first();
@@ -5255,8 +5259,10 @@ class UploadConnector extends Model
             $msd_data_val = new LocationData();
 			UploadConnector::assignToData($msd_data_val, $loc_obj);
 			UploadConnector::assignToData($msd_data_val, $loc_detail);
-			$params = $msd_data_val->xmlArrayUpdateLocation();
+			$params = $msd_data_val->xmlArrayUpdateLocation2();
 			$request = new SoapVar($params, XSD_ANYXML);
+			//print_r($request); exit;
+			
 			$soap_result = Globals::callSoapApiCreate($url, $request, $sales_office_no);
 
             if (isset($soap_result->CustomerModifyRequestCard)) {
@@ -5268,6 +5274,7 @@ class UploadConnector extends Model
                   
 			return $soap_result;
 		}
+
 	}
 
     /**
@@ -5496,6 +5503,7 @@ class UploadConnector extends Model
     public static function assignToData($data, $model)
     {
         foreach ($model->getAttributes() as $key => $value) {
+			if($key == "balance_fulls") (int) $value;
             if (property_exists($data, $key))
                 $data->$key = $value;
         }

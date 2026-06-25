@@ -1908,11 +1908,11 @@ class APIController extends Controller
 
             return [
                 "success" => true,
-                "message" => $test,
+                "message" => json_encode($test),
             ];
         } catch (\Exception $exc) {
             Log::error($exc->getMessage());
-            throw $exc;
+			throw $exc;
         }
     }
 
@@ -2972,7 +2972,7 @@ class APIController extends Controller
     {
         $data = json_decode($request->getContent(), true);
         $company = isset($data['company']) ? $data['company'] : "";
-
+		Log::info("Dumaan dito");
         try {
             /** Dispatches new Job */
             dispatch((new APIJobHandler('withdrawal-request', $request->getContent()))->onQueue('api-queue-' . strtolower($company)));
@@ -3107,10 +3107,11 @@ class APIController extends Controller
     {
         $data = json_decode($request->getContent(), true);
         $company = isset($data['company']) ? $data['company'] : "";
-
+		file_put_contents(storage_path('qamote.json'), json_encode($data, JSON_PRETTY_PRINT) );
         try {
             /** Dispatches new Job */
             $test = dispatch((new APIJobHandler('credit-memo-queue', $request->getContent()))->onQueue('api-queue-' . strtolower($company)));
+			
             return [
                 "success" => true,
                 "message" => SalesOrderData::MODULE_NAME_SALES_ORDER . " successfully created queue to execute on background."
